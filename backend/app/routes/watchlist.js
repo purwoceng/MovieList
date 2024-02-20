@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma.js";
+import authToken from "./middlewares/auth-token.js";
 
-const prisma = new PrismaClient();
 const router = Router();
 
-router.post("/watchlist", async (req, res) => {
+router.post("/watchlist", authToken, async (req, res) => {
+  
+  const user_id = req.user.id
+
   try {
-    const { user_id, movie_id } = req.body;
+    const {movie_id } = req.body;
 
     // Menambahkan film ke watchlist
     const watchlistItem = await prisma.watchlist.create({
@@ -23,9 +26,15 @@ router.post("/watchlist", async (req, res) => {
   }
 });
 
-router.get("/watchlist", async (req, res) => {
+router.get("/watchlist", authToken, async (req, res) => {
+
+  const user_id = req.user.id;
   try {
-    const watchlistItems = await prisma.watchlist.findMany();
+    const watchlistItems = await prisma.watchlist.findMany({
+      where: {
+        user_id: Number(user_id),
+      }
+    });
     res.json(watchlistItems);
   } catch (error) {
     console.error("Error fetching watchlist:", error);

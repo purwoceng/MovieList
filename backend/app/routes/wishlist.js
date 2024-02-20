@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
+import prisma from "../prisma.js";
+import authToken from "./middlewares/auth-token.js";
 
-const prisma = new PrismaClient();
 const router = Router();
 
-router.post("/wishlist", async (req, res) => {
+router.post("/wishlist", authToken, async (req, res) => {
   try {
     const { user_id, movie_id } = req.body;
 
@@ -23,9 +23,15 @@ router.post("/wishlist", async (req, res) => {
   }
 });
 
-router.get("/wishlist", async (req, res) => {
+router.get("/wishlist", authToken, async (req, res) => {
+
+  const user_id = req.user.id
   try {
-    const wishlistItems = await prisma.wishlist.findMany();
+    const wishlistItems = await prisma.wishlist.findMany({
+      where: {
+        user_id: Number(user_id),
+      }
+    });
     res.json(wishlistItems);
   } catch (error) {
     console.error("Error fetching wishlist:", error);
