@@ -2,8 +2,10 @@ import { AppBar, Toolbar, IconButton, Drawer, Button, Avatar, useMediaQuery, Box
 import { useState } from 'react'
 import { Menu, AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
+
 import { useTheme } from '@mui/material/styles'
 import { Sidebar } from '..'
+
 
 const NavBar = () => {
 
