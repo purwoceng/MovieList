@@ -9,7 +9,8 @@ import {
   Profile,
   MovieInformation,
 } from "./components";
-import SignUp from "./components/users/sign-up";
+import Register from "./components/users/register";
+import Login from "./components/users/login";
 
 const App = () => {
   return (
@@ -23,7 +24,8 @@ const App = () => {
           <Route path="/movies/:id" element={<MovieInformation />} />
           <Route path="/actors/:id" element={<Actors />} />
           <Route path="/profile/:id" element={<Profile />} />
-          <Route path="/register" exact element={<SignUp />} />
+          <Route path="/register" exact element={<Register />} />
+          <Route path="/login" exact element={<Login />} />
         </Routes>
       </Box>
     </Box>
