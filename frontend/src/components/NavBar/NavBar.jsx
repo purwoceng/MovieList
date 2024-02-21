@@ -1,7 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { AppBar, Toolbar, IconButton, Drawer, Button, Avatar, useMediaQuery } from '@mui/material'
 import { Menu, AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
+
+
 
 const NavBar = () => {
     const isMobile = useMediaQuery('(max-width: 600px)')
@@ -35,6 +37,7 @@ const NavBar = () => {
 
                 </Toolbar>
             </AppBar>
+            
         </>
     )
 }
