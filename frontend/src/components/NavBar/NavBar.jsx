@@ -3,16 +3,18 @@ import { AppBar, Toolbar, IconButton, Drawer, Button, Avatar, useMediaQuery } fr
 import { Menu, AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 
-import useStyles from './styles'
-
 const NavBar = () => {
-    const classes = useStyles()
     const isMobile = useMediaQuery('(max-width: 600px)')
 
     return (
         <>
             <AppBar position='fixed'>
-                <Toolbar className={classes.toolbar}>
+                <Toolbar sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    height: '80px',
+                    marginLeft: '240px'
+                }}>
                     {/* {isMobile && (
                         <IconButton
                             color='inherit'

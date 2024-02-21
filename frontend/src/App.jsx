@@ -2,12 +2,9 @@ import React from 'react'
 import { CssBaseline, Box } from '@mui/material'
 import { Route, Routes } from 'react-router'
 
-import useStyles from './components/styles'
-
 import { NavBar, Movies, Actors, Profile, MovieInformation } from './components'
 
 const App = () => {
-  const classes = useStyles()
 
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
