@@ -28,6 +28,7 @@ function SignUp() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [open, setOpen] = useState(false); // State untuk mengontrol visibilitas modal alert
+  const [required, setRequired] = useState(false); // State untuk menunjukkan apakah form terisi semua
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -49,8 +50,17 @@ function SignUp() {
     setOpen(false); // Tutup modal alert
   };
 
+  const handleRequired = () => {
+    setRequired(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!formData.name || !formData.email || !formData.password) {
+      setRequired(true);
+      return;
+    }
 
     axiosApi
       .post("/users/register", {
@@ -181,6 +191,18 @@ function SignUp() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleModalClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={required} onClose={handleRequired}>
+        <DialogTitle>Required</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">All Fields are Required!</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRequired} color="primary">
             Close
           </Button>
         </DialogActions>
