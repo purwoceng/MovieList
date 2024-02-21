@@ -1,13 +1,31 @@
-import React from 'react'
-import { AppBar, Toolbar, IconButton, Drawer, Button, Avatar, useMediaQuery } from '@mui/material'
-import { Menu, AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material'
-import { Link } from 'react-router-dom'
-import { useTheme } from '@mui/material/styles/'
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Drawer,
+  Button,
+  Avatar,
+  useMediaQuery,
+  Box,
+} from "@mui/material";
+import { useState } from "react";
+import {
+  Menu,
+  AccountCircle,
+  Brightness4,
+  Brightness7,
+} from "@mui/icons-material";
+import { Link } from "react-router-dom";
+
+import { useTheme } from "@mui/material/styles";
+import { Sidebar } from "..";
 
 const NavBar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isAuthenticated = true;
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const drawerWidth = 240;
 
   return (
     <>
@@ -29,7 +47,7 @@ const NavBar = () => {
               color="inherit"
               edge="start"
               style={{ outline: "none" }}
-              onClick={() => {}}
+              onClick={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
               sx={{
                 mr: theme.spacing(2),
                 [theme.breakpoints.up("sm")]: {
@@ -55,7 +73,12 @@ const NavBar = () => {
                 color="inherit"
                 component={Link}
                 to={`/profile/:id`}
-                className=""
+                style={{
+                  "&: hover": {
+                    color: "white !important",
+                    textDecoration: "none",
+                  },
+                }}
                 onClick={() => {}}
               >
                 {!isMobile && <>My Movies &nbsp;</>}
@@ -70,6 +93,36 @@ const NavBar = () => {
           {isMobile && "Search..."}
         </Toolbar>
       </AppBar>
+
+      <div>
+        <Box
+          component={"nav"}
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        >
+          {isMobile ? (
+            <Drawer
+              variant="temporary"
+              anchor="right"
+              open={mobileOpen}
+              onClose={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
+              classes={{ paper: { width: drawerWidth } }}
+              ModalProps={{
+                keepMounted: true,
+              }}
+            >
+              <Sidebar setMobileOpen={setMobileOpen} />
+            </Drawer>
+          ) : (
+            <Drawer
+              classes={{ paper: { width: drawerWidth } }}
+              variant="permanent"
+              open
+            >
+              <Sidebar setMobileOpen={setMobileOpen} />
+            </Drawer>
+          )}
+        </Box>
+      </div>
     </>
   );
 };
