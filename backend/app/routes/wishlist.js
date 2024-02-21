@@ -5,8 +5,9 @@ import authToken from "./middlewares/auth-token.js";
 const router = Router();
 
 router.post("/wishlist", authToken, async (req, res) => {
+  const user_id = req.user.id
   try {
-    const { user_id, movie_id } = req.body;
+    const {movie_id } = req.body;
 
     // Menambahkan film ke wishlist
     const wishlistItem = await prisma.wishlist.create({
