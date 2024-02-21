@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// eslint-disable-next-line no-undef
-const tmdbApiKey = process.env.TMDB_KEY;
+const tmdbApiKey = "e14104f5929fe7a58118c33246c8b05f";
 const page = 1;
 
 export const tmdbApi = createApi({
