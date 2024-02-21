@@ -1,21 +1,8 @@
-import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Drawer,
-  Button,
-  Avatar,
-  useMediaQuery,
-} from "@mui/material";
-import {
-  Menu,
-  AccountCircle,
-  Brightness4,
-  Brightness7,
-} from "@mui/icons-material";
-import { Link } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
+import React from 'react'
+import { AppBar, Toolbar, IconButton, Drawer, Button, Avatar, useMediaQuery } from '@mui/material'
+import { Menu, AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material'
+import { Link } from 'react-router-dom'
+import { useTheme } from '@mui/material/styles/'
 
 const NavBar = () => {
   const theme = useTheme();
