@@ -10,7 +10,7 @@ const MovieList = ({ movies }) => {
   const theme = useTheme();
   console.log("movie list");
   return (
-    <Grid xs={12} container spacing={2}>
+    <Grid xs={12} container spacing={2} ml={2}>
       {movies.results.map((movie, i) => (
         <Movie key={i} movie={movie} i={i} />
       ))}
