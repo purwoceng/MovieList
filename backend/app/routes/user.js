@@ -3,44 +3,45 @@ import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import authToken from "./middlewares/auth-token.js";
+import authToken from "../middlewares/auth-token.js";
 import cors from "cors";
+import { validateRegister, validateLogin } from "../middlewares/validator.js";
 
 const prisma = new PrismaClient();
 const router = Router();
 router.use(cors());
 
-router.post("/users/register", async (req, res) => {
-  const { name, email, password, image } = req.body;
+// router.post("/register", async (req, res) => {
+//   const { name, email, password, image } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+//   if (!name || !email || !password) {
+//     return res.status(400).json({ message: "All fields are required" });
+//   }
 
-  const existUser = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
+//   const existUser = await prisma.user.findUnique({
+//     where: {
+//       email: email,
+//     },
+//   });
 
-  if (existUser) {
-    return res.status(400).json({ message: "Email is already in use" });
-  }
+//   if (existUser) {
+//     return res.status(400).json({ message: "Email is already in use" });
+//   }
 
-  const pass = await bcrypt.hash(password, 12);
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: pass,
-      role_id: 1,
-    },
-  });
-  if (!user) return res.status(400).json({ message: "User not created" });
-  res.status(201).json({ user });
-});
+//   const pass = await bcrypt.hash(password, 12);
+//   const user = await prisma.user.create({
+//     data: {
+//       name,
+//       email,
+//       password: pass,
+//       role_id: 1,
+//     },
+//   });
+//   if (!user) return res.status(400).json({ message: "User not created" });
+//   res.status(201).json({ user });
+// });
 
-router.post("/users/login", async (req, res) => {
+router.post("/login", validateLogin, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -53,7 +54,7 @@ router.post("/users/login", async (req, res) => {
     },
   });
   if (!user) {
-    return res.status(400).json({ message: "Invalid email or password" });
+    return res.status(400).json({ message: "Invalid credential" });
   }
   const validPassword = bcrypt.compareSync(password, user.password);
 
@@ -131,4 +132,20 @@ router.put("/profile", authToken, async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+router.post("/users/registerer", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "email or password is required" });
+  }
+
+  
+});
+
+router.post("/register", validateRegister, (req, res) => {
+  res.json({message:"Sukses mencoba coba dengan post register "});
+});
+
 export default router;
