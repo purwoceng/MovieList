@@ -8,12 +8,14 @@ import {
   Box,
   CircularProgress,
   ListSubheader,
+  ListItemButton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 import { useGetGenresQuery } from "../../services/TMDB";
+import genreIcons from "../../assets/genres";
 
 const categories = [
   { label: "Popular", value: "popular" },
@@ -68,15 +70,23 @@ const Sidebar = ({ setMobileOpen }) => {
                 textDecoration: "none",
               }}
             >
-              <ListItem
+              <ListItemButton
                 onClick={() => dispatch(selectGenreOrCategory(value))}
-                button
+                // button
               >
-                {/* <ListItemIcon>
-                                    <img src={redLogo} style={{ filter: theme.palette.mode === 'dark' ? 'dark' : 'invert(1)' }} height={30} />
-                                </ListItemIcon> */}
+                <ListItemIcon>
+                  <img
+                    src={genreIcons[label.toLowerCase()]}
+                    // style={{
+                    //   filter:
+                    //     // theme.palette.mode === "dark" ? "dark" : "invert(1)",
+                    //     "none",
+                    // }}
+                    height={30}
+                  />
+                </ListItemIcon>
                 <ListItemText primary={label} />
-              </ListItem>
+              </ListItemButton>
             </Link>
           ))}
         </List>
@@ -100,15 +110,23 @@ const Sidebar = ({ setMobileOpen }) => {
                 }}
                 to="/"
               >
-                <ListItem
+                <ListItemButton
                   onClick={() => dispatch(selectGenreOrCategory(id))}
-                  button
+                  // button
                 >
-                  {/* <ListItemIcon>
-                                    <img src={redLogo} style={{ filter: theme.palette.mode === 'dark' ? 'dark' : 'invert(1)' }} height={30} />
-                                </ListItemIcon> */}
+                  <ListItemIcon>
+                    <img
+                      src={genreIcons[name.toLowerCase()]}
+                      // style={{
+                      //   filter:
+                      //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
+                      //     // "none",
+                      // }}
+                      height={30}
+                    />
+                  </ListItemIcon>
                   <ListItemText primary={name} />
-                </ListItem>
+                </ListItemButton>
               </Link>
             ))
           )}

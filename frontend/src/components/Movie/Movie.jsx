@@ -17,7 +17,7 @@ const Movie = ({ movie, i }) => {
 
   const ImageWithStyle = styled("img")({
     borderRadius: "20px",
-    height: "300px",
+    height: "280px",
     marginBottom: "10px",
     transition: "transform 0.3s ease-in-out",
     "&:hover": {
@@ -63,7 +63,7 @@ const Movie = ({ movie, i }) => {
           textOverflow: "ellipsis",
           overflow: "hidden",
           whiteSpace: "nowrap",
-          width: "100%",
+          width: 187,
           mt: "10px",
           mb: "0px",
         }}
@@ -72,7 +72,7 @@ const Movie = ({ movie, i }) => {
         {movie.title}
       </Typography>
       <Tooltip disableTouchListener title={`${movie.vote_average} / 10`}>
-        <div>
+        <div style={{ width: 187 }}>
           <Rating readOnly value={movie.vote_average / 2} precision={0.1} />
         </div>
       </Tooltip>
