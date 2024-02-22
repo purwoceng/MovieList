@@ -31,9 +31,9 @@ const demoCategories = [
 ];
 
 const redLogo =
-  "https://fontmeme.com/permalink/240221/06da7b28bee6adaad2438f1dec7814ac.png";
+  "https://fontmeme.com/permalink/240222/a38b5a781021948c273517b66664cf81.png";
 const blueLogo =
-  "https://fontmeme.com/permalink/240221/6f3d6e4ff1a52a739d64980f98d242f5.png";
+  "https://fontmeme.com/permalink/240222/faea312e9c50e22410269ab0d1bdc488.png";
 
 const Sidebar = ({ setMobileOpen }) => {
   const theme = useTheme();
