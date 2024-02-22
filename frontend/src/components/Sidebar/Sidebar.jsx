@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 import { useGetGenresQuery } from "../../services/TMDB";
 import genreIcons from "../../assets/genres";
+import { auto } from "@popperjs/core";
 
 const categories = [
   { label: "Popular", value: "popular" },
@@ -41,97 +42,95 @@ const Sidebar = ({ setMobileOpen }) => {
   console.log(data);
 
   return (
-    <div>
-      <>
-        <Link
-          to="/"
-          style={{
-            diaplay: "flex",
-            justifyContent: "center",
-            padding: "10% 0",
-          }}
-        >
-          <img
-            style={{ width: "70%" }}
-            src={theme.palette.mode === "light" ? redLogo : blueLogo}
-            alt="Filmpire logo"
-          />
-        </Link>
-        <Divider />
-        <List>
-          <ListSubheader>Categories</ListSubheader>
-          {categories.map(({ label, value }) => (
+    <>
+      <Link
+        to="/"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "10% 0",
+        }}
+      >
+        <img
+          style={{ width: "70%" }}
+          src={theme.palette.mode === "light" ? redLogo : blueLogo}
+          alt="Filmpire logo"
+        />
+      </Link>
+      <Divider />
+      <List>
+        <ListSubheader>Categories</ListSubheader>
+        {categories.map(({ label, value }) => (
+          <Link
+            key={value}
+            to="/"
+            style={{
+              color: theme.palette.text.primary,
+              textDecoration: "none",
+            }}
+          >
+            <ListItemButton
+              onClick={() => dispatch(selectGenreOrCategory(value))}
+            // button
+            >
+              <ListItemIcon>
+                <img
+                  src={genreIcons[label.toLowerCase()]}
+                  // style={{
+                  //   filter:
+                  //     // theme.palette.mode === "dark" ? "dark" : "invert(1)",
+                  //     "none",
+                  // }}
+                  height={30}
+                />
+              </ListItemIcon>
+              <ListItemText primary={label} />
+            </ListItemButton>
+          </Link>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        <ListSubheader>Genres</ListSubheader>
+        {isFetching ? (
+          <Box display="flex" justifyContent="center">
+            <CircularProgress />
+          </Box>
+        ) : (
+          data.genres.map(({ name, id }) => (
             <Link
-              key={value}
-              to="/"
+              key={name}
               style={{
-                color: theme.palette.text.primary,
+                diaplay: "flex",
+                justifyContent: "center",
+                padding: "10% 0",
                 textDecoration: "none",
+                color: theme.palette.text.primary,
               }}
+              to="/"
             >
               <ListItemButton
-                onClick={() => dispatch(selectGenreOrCategory(value))}
-                // button
+                onClick={() => dispatch(selectGenreOrCategory(id))}
+              // button
               >
                 <ListItemIcon>
                   <img
-                    src={genreIcons[label.toLowerCase()]}
+                    src={genreIcons[name.toLowerCase()]}
                     // style={{
                     //   filter:
-                    //     // theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                    //     "none",
+                    //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
+                    //     // "none",
                     // }}
                     height={30}
                   />
                 </ListItemIcon>
-                <ListItemText primary={label} />
+                <ListItemText primary={name} />
               </ListItemButton>
             </Link>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          <ListSubheader>Genres</ListSubheader>
-          {isFetching ? (
-            <Box display="flex" justifyContent="center">
-              <CircularProgress />
-            </Box>
-          ) : (
-            data.genres.map(({ name, id }) => (
-              <Link
-                key={name}
-                style={{
-                  diaplay: "flex",
-                  justifyContent: "center",
-                  padding: "10% 0",
-                  textDecoration: "none",
-                  color: theme.palette.text.primary,
-                }}
-                to="/"
-              >
-                <ListItemButton
-                  onClick={() => dispatch(selectGenreOrCategory(id))}
-                  // button
-                >
-                  <ListItemIcon>
-                    <img
-                      src={genreIcons[name.toLowerCase()]}
-                      // style={{
-                      //   filter:
-                      //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                      //     // "none",
-                      // }}
-                      height={30}
-                    />
-                  </ListItemIcon>
-                  <ListItemText primary={name} />
-                </ListItemButton>
-              </Link>
-            ))
-          )}
-        </List>
-      </>
-    </div>
+          ))
+        )}
+      </List>
+    </>
   );
 };
 
