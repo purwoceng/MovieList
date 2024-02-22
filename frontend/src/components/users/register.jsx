@@ -29,6 +29,7 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [open, setOpen] = useState(false); // State untuk mengontrol visibilitas modal alert
   const [required, setRequired] = useState(false); // State untuk menunjukkan apakah form terisi semua
+  const [message, setMessage] = useState("")
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -69,7 +70,7 @@ function SignUp() {
         password: formData.password,
       })
       .then((response) => {
-        console.log("Response:", response.data);
+        console.log("Response:", response.data.response);
         setOpen(true); // Tampilkan modal alert setelah berhasil mendaftar
         setFormData({
           // Kosongkan form setelah berhasil submit
@@ -79,10 +80,12 @@ function SignUp() {
         });
       })
       .catch((error) => {
-        console.error("There was an error signing up:", error);
+        console.error("There was an error signing up:", error.response.data);
+        setMessage(error.response.data.message);
       });
   };
 
+  console.log(message)
   return (
     <ThemeProvider theme={createTheme()}>
       <Container component="main" maxWidth="xs">
@@ -171,6 +174,7 @@ function SignUp() {
             >
               Sign Up
             </Button>
+            {message ? <p>{message}</p> : null}
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="#" variant="body2">
