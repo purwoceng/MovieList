@@ -1,33 +1,30 @@
-import React,{useState, useEffect} from 'react'
-import {TextFiels, InputAdornment} from '@mui/material'
-import {Search as SearchIcon} from '@mui/material'
-import {useDispatch, useSelector} from 'react-redux'
-import {useLocation} from 'react-router-dom'
+import React, { useState } from 'react';
+import { TextField, InputAdornment } from '@mui/material';
+import { Search as SearchIcon } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
 
-import {searchMovie} from '../../features/currentGenreOrCategory'
- 
+import { searchMovie } from "../../features/currentGenreOrCategory.js";
 
 const Search = () => {
-    const classes = useStyles()
-    const [query, setQuery] = useState('')
-    console.log('Search')
-    const dispatch = useDispatch()
+    const [query, setQuery] = useState('');
+    const dispatch = useDispatch();
 
     const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {            dispatch(searchMovie(query))
+        if (event.key === 'Enter') {            
+            dispatch(searchMovie(query));
         }
-    }
+    };
 
     return (
-        <div className={classNames.searchContainer}> 
+        <div className={classes.searchContainer}> 
             <TextField 
                 onKeyPress={handleKeyPress}
                 value={query}
-                onChange={(e)=>setQuery(e.target.value)}
+                onChange={(e) => setQuery(e.target.value)}
                 variant="standard"
                 InputProps={{
                     className: classes.input,
-                    startAdornment:(
+                    startAdornment: (
                         <InputAdornment position="start">
                             <SearchIcon />
                         </InputAdornment>
@@ -35,7 +32,7 @@ const Search = () => {
                 }}
             />
         </div>
-    )
-}
+    );
+};
 
-export default Search
+export default Search;
