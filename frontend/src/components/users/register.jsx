@@ -85,7 +85,7 @@ function SignUp() {
       });
   };
 
-  console.log(message)
+
   return (
     <ThemeProvider theme={createTheme()}>
       <Container component="main" maxWidth="xs">
@@ -98,9 +98,11 @@ function SignUp() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <AccountCircleIcon />
-          </Avatar>
+          <img
+            src="https://fontmeme.com/permalink/240221/06da7b28bee6adaad2438f1dec7814ac.png"
+            alt="Logo"
+            style={{ display: "block", margin: "0px auto", width: "30%" }}
+          />
           <Typography component="h1" variant="h5">
             Daftar Dulu ya!
           </Typography>
@@ -177,7 +179,7 @@ function SignUp() {
             {message ? <p>{message}</p> : null}
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Udah Punya akun?? Masuk aja
                 </Link>
               </Grid>
