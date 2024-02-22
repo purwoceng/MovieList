@@ -12,7 +12,6 @@ const Movie = ({ movie, i }) => {
     "&:hover": {
       cursor: "pointer",
       opacity: 0.8,
-      transition: "opacity 0.3s ease-in-out",
     },
   });
 
@@ -52,7 +51,7 @@ const Movie = ({ movie, i }) => {
             {movie.poster_path && (
               <ImageWithStyle
                 alt={movie.title}
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
               />
             )}
           </Link>
