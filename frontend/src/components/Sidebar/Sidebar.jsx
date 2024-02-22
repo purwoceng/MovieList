@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 import { useGetGenresQuery } from "../../services/TMDB";
 
 const categories = [
@@ -33,6 +35,7 @@ const blueLogo =
 const Sidebar = ({ setMobileOpen }) => {
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
+  const dispatch = useDispatch();
   console.log(data);
 
   return (
@@ -64,7 +67,10 @@ const Sidebar = ({ setMobileOpen }) => {
                 textDecoration: "none",
               }}
             >
-              <ListItem onClick={() => {}} button>
+              <ListItem
+                onClick={() => dispatch(selectGenreOrCategory(value))}
+                button
+              >
                 {/* <ListItemIcon>
                                     <img src={redLogo} style={{ filter: theme.palette.mode === 'dark' ? 'dark' : 'invert(1)' }} height={30} />
                                 </ListItemIcon> */}
@@ -91,7 +97,10 @@ const Sidebar = ({ setMobileOpen }) => {
                 }}
                 to="/"
               >
-                <ListItem onClick={() => {}} button>
+                <ListItem
+                  onClick={() => dispatch(selectGenreOrCategory(id))}
+                  button
+                >
                   {/* <ListItemIcon>
                                     <img src={redLogo} style={{ filter: theme.palette.mode === 'dark' ? 'dark' : 'invert(1)' }} height={30} />
                                 </ListItemIcon> */}
