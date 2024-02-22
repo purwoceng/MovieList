@@ -88,6 +88,8 @@ const Sidebar = ({ setMobileOpen }) => {
                   diaplay: "flex",
                   justifyContent: "center",
                   padding: "10% 0",
+                  textDecoration: "none",
+                  color: theme.palette.text.primary,
                 }}
                 to="/"
               >
