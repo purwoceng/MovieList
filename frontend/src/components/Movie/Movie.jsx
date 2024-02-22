@@ -34,7 +34,7 @@ const Movie = ({ movie, i }) => {
       md={4}
       lg={3}
       xl={2}
-      sx={{ pading: "10px", textAlign: "center" }}
+      sx={{ padding: "10px", textAlign: "center" }}
     >
       <Grow in key={i} timeout={(i + 1) * 250}>
         <ImageListItemWithStyle>
