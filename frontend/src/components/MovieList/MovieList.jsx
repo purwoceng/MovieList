@@ -1,19 +1,21 @@
-import React from 'react';
-import {Grid} from '@mui/material';
+import React from "react";
+import { Grid } from "@mui/material";
+// Importing useStyles from "./styles" commented out for now
+// import useStyles from "./styles";
+import { useTheme } from "@mui/material/styles";
+import { Movie } from "..";
 
-import useStyles from './styles'
-import {Movie} from '..'
-
-const MovieList = ({movies}) => {
-    const classes = useStyles();
-    console.log('movie list')
-    return (
-        <Grid container className={classes.moviesContainer}>
-            {movies.results.map((movie,i) => (
-                <Movie Key={i} movie={movie} i={i} />
-            ))}
-        </Grid>
-    )
-}
+const MovieList = ({ movies }) => {
+  // const classes = useStyles(); // Uncomment if you plan to use useStyles
+  const theme = useTheme();
+  console.log("movie list");
+  return (
+    <Grid xs={12} container spacing={2}>
+      {movies.results.map((movie, i) => (
+        <Movie key={i} movie={movie} i={i} />
+      ))}
+    </Grid>
+  );
+};
 
 export default MovieList;
