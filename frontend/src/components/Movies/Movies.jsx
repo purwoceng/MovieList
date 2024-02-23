@@ -16,8 +16,10 @@ const Movies = () => {
   const { genreIdOrCategoryName, searchQuery } = useSelector(
     (state) => state.currentGenreOrCategory
   );
+  
   const { data, error, isFetching } = useGetMoviesQuery({genreIdOrCategoryName, page, searchQuery});
 
+  console.log(data);
   if (isFetching) {
     return (
       <Box display="flex" justifyContent="center">
