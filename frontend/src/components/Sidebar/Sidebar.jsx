@@ -31,7 +31,7 @@ const blueLogo =
   "https://fontmeme.com/permalink/240222/faea312e9c50e22410269ab0d1bdc488.png";
 
 const Sidebar = ({ setMobileOpen }) => {
-  const { genreOrCategoryName } = 
+  const {genreIdOrCategoryName} = useSelector((state)=>state.currentGenreOrCategory)
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
   const dispatch = useDispatch();
