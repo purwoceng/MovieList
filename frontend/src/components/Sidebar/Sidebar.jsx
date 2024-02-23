@@ -23,12 +23,7 @@ const categories = [
   { label: "Top Rated", value: "top_rated" },
   { label: "Upcoming", value: "upcoming" },
 ];
-const demoCategories = [
-  { label: "Comedy", value: "comedy" },
-  { label: "Action", value: "action" },
-  { label: "Horror", value: "Horror" },
-  { label: "Animation", value: "animation" },
-];
+
 
 const redLogo =
   "https://fontmeme.com/permalink/240222/a38b5a781021948c273517b66664cf81.png";
@@ -36,6 +31,7 @@ const blueLogo =
   "https://fontmeme.com/permalink/240222/faea312e9c50e22410269ab0d1bdc488.png";
 
 const Sidebar = ({ setMobileOpen }) => {
+  const { genreOrCategoryName } = 
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
   const dispatch = useDispatch();
