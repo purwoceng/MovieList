@@ -26,6 +26,7 @@ const Movie = ({ movie, i }) => {
   });
 
   return (
+    
     <Grid
       item
       xs={12}
@@ -33,7 +34,7 @@ const Movie = ({ movie, i }) => {
       md={4}
       lg={3}
       xl={2}
-      sx={{ padding: "10px", textAlign: "center" }}
+      sx={{ padding: "10px", textAlign: "center", [theme.breakpoints.down("sm")]: { width: "200px" } }}
     >
       <Grow in key={i} timeout={(i + 1) * 250}>
         <ImageListItemWithStyle>
@@ -63,7 +64,6 @@ const Movie = ({ movie, i }) => {
           textOverflow: "ellipsis",
           overflow: "hidden",
           whiteSpace: "nowrap",
-          width: 187,
           mt: "10px",
           mb: "0px",
         }}
@@ -72,7 +72,7 @@ const Movie = ({ movie, i }) => {
         {movie.title}
       </Typography>
       <Tooltip disableTouchListener title={`${movie.vote_average} / 10`}>
-        <div style={{ width: 187 }}>
+        <div style={{ width: '100%' }}>
           <Rating readOnly value={movie.vote_average / 2} precision={0.1} />
         </div>
       </Tooltip>
