@@ -31,3 +31,4 @@ router.get("/movie", async (req, res) => {
 });
 
 export default router;
+

@@ -29,6 +29,7 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [open, setOpen] = useState(false); // State untuk mengontrol visibilitas modal alert
   const [required, setRequired] = useState(false); // State untuk menunjukkan apakah form terisi semua
+  const [message, setMessage] = useState("")
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -69,7 +70,7 @@ function SignUp() {
         password: formData.password,
       })
       .then((response) => {
-        console.log("Response:", response.data);
+        console.log("Response:", response.data.response);
         setOpen(true); // Tampilkan modal alert setelah berhasil mendaftar
         setFormData({
           // Kosongkan form setelah berhasil submit
@@ -79,9 +80,11 @@ function SignUp() {
         });
       })
       .catch((error) => {
-        console.error("There was an error signing up:", error);
+        console.error("There was an error signing up:", error.response.data);
+        setMessage(error.response.data.message);
       });
   };
+
 
   return (
     <ThemeProvider theme={createTheme()}>
@@ -95,9 +98,11 @@ function SignUp() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <AccountCircleIcon />
-          </Avatar>
+          <img
+            src="https://fontmeme.com/permalink/240221/06da7b28bee6adaad2438f1dec7814ac.png"
+            alt="Logo"
+            style={{ display: "block", margin: "0px auto", width: "30%" }}
+          />
           <Typography component="h1" variant="h5">
             Daftar Dulu ya!
           </Typography>
@@ -171,9 +176,10 @@ function SignUp() {
             >
               Sign Up
             </Button>
+            {message ? <p>{message}</p> : null}
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Udah Punya akun?? Masuk aja
                 </Link>
               </Grid>
