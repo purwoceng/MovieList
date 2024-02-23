@@ -35,7 +35,7 @@ export const tmdbApi = createApi({
         }
 
         //* Get Popular Movies
-        return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
+        return "https://api.themoviedb.org/3/movie/popular?page=1&api_key=e14104f5929fe7a58118c33246c8b05f";
       },
     }),
   }),

@@ -29,7 +29,7 @@ const Movies = () => {
     );
   }
 
-  if (!data.results.length) {
+  if (!data || !data.results || data.results.length === 0) {
     return (
       <Box display="flex" justifyContent="center" mt="20px">
         <Typography variant="h4">
