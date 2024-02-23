@@ -16,17 +16,14 @@ import {
   Brightness7,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-
 import { useTheme } from "@mui/material/styles";
-import { Sidebar } from "..";
-
+import { Sidebar, Search } from "..";
 const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isAuthenticated = true;
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const drawerWidth = 240;
-
   return (
     <>
       <AppBar position="fixed">
@@ -58,11 +55,10 @@ const NavBar = () => {
               <Menu />
             </IconButton>
           )}
-
           <IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
-          {!isMobile && "Search.."}
+          {!isMobile && <Search />}
           <div>
             {isAuthenticated ? (
               <Button color="inherit" onClick={() => {}}>
@@ -90,10 +86,9 @@ const NavBar = () => {
               </Button>
             )}
           </div>
-          {isMobile && "Search.."}
+          {isMobile && <Search />}
         </Toolbar>
       </AppBar>
-
       <div>
         <Box
           component={"nav"}
@@ -126,5 +121,4 @@ const NavBar = () => {
     </>
   );
 };
-
 export default NavBar;
