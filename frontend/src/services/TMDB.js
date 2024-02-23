@@ -4,6 +4,7 @@ const tmdbApiKey = "e14104f5929fe7a58118c33246c8b05f";
 
 
 
+
 export const tmdbApi = createApi({
   reducerPath: "tmdbApi",
   baseQuery: fetchBaseQuery({
@@ -14,11 +15,12 @@ export const tmdbApi = createApi({
       query: () => `genre/movie/list?api_key=${tmdbApiKey}`,
     }),
     getMovies: builder.query({
-      query: (genreIdOrCategoryName, page) =>{
+      query: ({genreIdOrCategoryName, page, searchQuery}) =>{
         //* Get Movies by Search
         if(searchQuery){
           return `search/movie?query=${searchQuery}&page=${page}&api_key=${tmdbApiKey}`;
         }
+
 
         //* Get Movies by Category
         if(genreIdOrCategoryName && typeof genreIdOrCategoryName === "string"){
