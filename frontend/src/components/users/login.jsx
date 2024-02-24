@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 
 const Login = () => {
+
     const navigate = useNavigate();
     const [formData, setFormData] = React.useState({
         email: "",
@@ -35,13 +36,13 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axiosApi.post("/users/login", formData);
+            const response = await axiosApi.post("/login", formData);
             console.log("Response:", response.data);
             localStorage.setItem("token", response.data.token);
             setOpen(true); // Set open to true when login is successful
         } catch (error) {
             console.error("There was an error signing in:", error);
-            setErrorMessage("Incorrect email or password");
+            setErrorMessage("Incorrect Email or Password");
             setErrorOpen(true); // Set errorOpen to true when login fails
         }
     };
@@ -160,4 +161,7 @@ const Login = () => {
     );
 };
 
+
+
 export default Login;
+

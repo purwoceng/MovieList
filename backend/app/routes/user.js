@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authToken from "../middlewares/auth-token.js";
 import cors from "cors";
-import { validateRegister, validateLogin } from "../middlewares/validator.js";
+// import { validateRegister, validateLogin } from "../middlewares/validator.js";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -41,7 +41,7 @@ router.use(cors());
 //   res.status(201).json({ user });
 // });
 
-router.post("/login", validateLogin, async (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -81,8 +81,6 @@ router.post("/login", validateLogin, async (req, res) => {
 
 router.get("/users", async (req, res) => {
   const user_id = req.user.id;
-
-  // res.json(req.user)
 
   const user = await prisma.user.findFirst({
     where: {
@@ -134,17 +132,7 @@ router.put("/profile", authToken, async (req, res) => {
 });
 
 
-router.post("/users/registerer", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "email or password is required" });
-  }
-
-  
-});
-
-router.post("/register", validateRegister, (req, res) => {
+router.post("/register", (req, res) => {
   res.json({message:"Sukses mencoba coba dengan post register "});
 });
 

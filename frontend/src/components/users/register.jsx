@@ -19,6 +19,10 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -30,15 +34,15 @@ function SignUp() {
   const [open, setOpen] = useState(false); // State untuk mengontrol visibilitas modal alert
   const [required, setRequired] = useState(false); // State untuk menunjukkan apakah form terisi semua
   const [message, setMessage] = useState("")
-
+  
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
+  
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevState) => ({
@@ -46,30 +50,33 @@ function SignUp() {
       [name]: value,
     }));
   };
-
+  const navigate = useNavigate();
+  
   const handleModalClose = () => {
-    setOpen(false); // Tutup modal alert
+    setOpen(false); // Close the registration modal
+    navigate("/login"); // Redirect to the login page
   };
-
+  
+  
   const handleRequired = () => {
     setRequired(false);
   };
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    
     if (!formData.name || !formData.email || !formData.password) {
       setRequired(true);
       return;
     }
-
+    
     axiosApi
-      .post("/users/register", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      })
-      .then((response) => {
+    .post("/register", {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    })
+    .then((response) => {
         console.log("Response:", response.data.response);
         setOpen(true); // Tampilkan modal alert setelah berhasil mendaftar
         setFormData({
