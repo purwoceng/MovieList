@@ -47,7 +47,7 @@ const Movie = ({ movie, i }) => {
                 flexDirection: "column",
               },
             }}
-            to={`/movie/${movie.id}`}
+            to={`/movies/${movie.id}`}
           >
             {movie.poster_path && (
               <ImageWithStyle
