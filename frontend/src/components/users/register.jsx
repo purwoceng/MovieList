@@ -21,6 +21,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { useNavigate } from "react-router-dom";
 
+
+
+
 function SignUp() {
   const [formData, setFormData] = useState({
     name: "",
@@ -30,16 +33,16 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [open, setOpen] = useState(false); // State untuk mengontrol visibilitas modal alert
   const [required, setRequired] = useState(false); // State untuk menunjukkan apakah form terisi semua
-  const [message, setMessage] = useState("");
-
+  const [message, setMessage] = useState("")
+  
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
+  
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevState) => ({
@@ -48,31 +51,32 @@ function SignUp() {
     }));
   };
   const navigate = useNavigate();
-
+  
   const handleModalClose = () => {
     setOpen(false); // Close the registration modal
     navigate("/login"); // Redirect to the login page
   };
-
+  
+  
   const handleRequired = () => {
     setRequired(false);
   };
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    
     if (!formData.name || !formData.email || !formData.password) {
       setRequired(true);
       return;
     }
-
+    
     axiosApi
-      .post("/register", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      })
-      .then((response) => {
+    .post("/register", {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    })
+    .then((response) => {
         console.log("Response:", response.data.response);
         setOpen(true); // Tampilkan modal alert setelah berhasil mendaftar
         setFormData({
@@ -87,6 +91,7 @@ function SignUp() {
         setMessage(error.response.data.message);
       });
   };
+
 
   return (
     <ThemeProvider theme={createTheme()}>
