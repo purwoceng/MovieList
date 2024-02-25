@@ -28,14 +28,17 @@ const categories = [
 const redLogo =
   "https://fontmeme.com/permalink/240222/a38b5a781021948c273517b66664cf81.png";
 const blueLogo =
-  "https://fontmeme.com/permalink/240222/faea312e9c50e22410269ab0d1bdc488.png";
+  "https://fontmeme.com/permalink/240225/faea312e9c50e22410269ab0d1bdc488.png";
 
 const Sidebar = ({ setMobileOpen }) => {
   const {genreIdOrCategoryName} = useSelector((state)=>state.currentGenreOrCategory)
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
   const dispatch = useDispatch();
-  console.log(data);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [genreIdOrCategoryName, setMobileOpen])
 
   return (
     <>
@@ -49,7 +52,7 @@ const Sidebar = ({ setMobileOpen }) => {
       >
         <img
           style={{ width: "70%" }}
-          src={theme.palette.mode === "light" ? redLogo : blueLogo}
+          src={theme.palette.mode === "dark" ? redLogo : blueLogo}
           alt="Filmpire logo"
         />
       </Link>
@@ -72,11 +75,10 @@ const Sidebar = ({ setMobileOpen }) => {
               <ListItemIcon>
                 <img
                   src={genreIcons[label.toLowerCase()]}
-                  // style={{
-                  //   filter:
-                  //     // theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                  //     "none",
-                  // }}
+                  style={{
+                    filter:
+                      theme.palette.mode === "dark"  && "invert(1)",
+                  }}
                   height={30}
                 />
               </ListItemIcon>
@@ -110,13 +112,14 @@ const Sidebar = ({ setMobileOpen }) => {
               // button
               >
                 <ListItemIcon>
-                  <img
+                  <Box
+                    component="img"
                     src={genreIcons[name.toLowerCase()]}
-                    // style={{
-                    //   filter:
-                    //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                    //     // "none",
-                    // }}
+                    sx={{
+                      filter:
+                        theme.palette.mode === "dark" && "invert(1)",
+                        // "none",
+                    }}
                     height={30}
                   />
                 </ListItemIcon>
