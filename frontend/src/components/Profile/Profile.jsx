@@ -33,6 +33,7 @@ const Profile = () => {
   }, [tokenExpired]);
 
   const Logout = () => {
+    alert("Apakah anda yakin keluar");
     localStorage.clear();
     navigate("/login");
   };
