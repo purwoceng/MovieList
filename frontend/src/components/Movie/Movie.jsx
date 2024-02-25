@@ -8,7 +8,7 @@ const Movie = ({ movie, i }) => {
   const theme = useTheme();
 
   const ImageListItemWithStyle = styled("div")({
-    position: "relative",
+    // position: "relative",
     "&:hover": {
       cursor: "pointer",
       opacity: 0.8,
@@ -34,7 +34,9 @@ const Movie = ({ movie, i }) => {
       md={4}
       lg={3}
       xl={2}
-      sx={{ padding: "10px", textAlign: "center", [theme.breakpoints.down("sm")]: { width: "200px" } }}
+      sx={{ padding: "10px", textAlign: "center", 
+      // [theme.breakpoints.down("sm")]
+      [theme.breakpoints.down("sm")]: { width: "200px" } }}
     >
       <Grow in key={i} timeout={(i + 1) * 250}>
         <ImageListItemWithStyle>
@@ -42,7 +44,7 @@ const Movie = ({ movie, i }) => {
             style={{
               textDecoration: "none",
               fontWeight: "bolder",
-              [theme.breakpoints.up("xs")]: {
+              [theme.breakpoints.down("sm")]: {
                 display: "flex",
                 flexDirection: "column",
               },
