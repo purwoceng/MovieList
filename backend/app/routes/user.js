@@ -11,35 +11,35 @@ const prisma = new PrismaClient();
 const router = Router();
 router.use(cors());
 
-// router.post("/register", async (req, res) => {
-//   const { name, email, password, image } = req.body;
+router.post("/register", async (req, res) => {
+  const { name, email, password, image } = req.body;
 
-//   if (!name || !email || !password) {
-//     return res.status(400).json({ message: "All fields are required" });
-//   }
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
 
-//   const existUser = await prisma.user.findUnique({
-//     where: {
-//       email: email,
-//     },
-//   });
+  const existUser = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
 
-//   if (existUser) {
-//     return res.status(400).json({ message: "Email is already in use" });
-//   }
+  if (existUser) {
+    return res.status(400).json({ message: "Email is already in use" });
+  }
 
-//   const pass = await bcrypt.hash(password, 12);
-//   const user = await prisma.user.create({
-//     data: {
-//       name,
-//       email,
-//       password: pass,
-//       role_id: 1,
-//     },
-//   });
-//   if (!user) return res.status(400).json({ message: "User not created" });
-//   res.status(201).json({ user });
-// });
+  const pass = await bcrypt.hash(password, 12);
+  const user = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password: pass,
+      role_id: 1,
+    },
+  });
+  if (!user) return res.status(400).json({ message: "User not created" });
+  res.status(201).json({ user });
+});
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -132,8 +132,43 @@ router.put("/profile", authToken, async (req, res) => {
 });
 
 
-router.post("/register", (req, res) => {
-  res.json({message:"Sukses mencoba coba dengan post register "});
+// router.post("/register", (req, res) => {
+//   res.json({message:"Sukses mencoba coba dengan post register "});
+// });
+
+router.get("/check-login", authToken, async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Token is required" });
+  }
+  const user_id = req.user.id;
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: Number(user_id),
+      },
+    });
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+router.post("add-to-watchlist", authToken, async (req, res) => {
+  const { user_id, movie_id } = req.body;
+  res.json({ user:user_id, movie:movie_id });
+  // try {
+  //   const watchlist = await prisma.watchlist.create({
+  //     data: {
+  //       user_id,
+  //       movie_id,
+  //     },
+  //   });
+  //   res.json(watchlist);
+  // } catch (error) {
+  //   console.error("Error adding movie to watchlists:", error);
+  //   res.status(500).json({ error: "Failed to add movie to watchlists" });
+  // }
 });
 
 export default router;

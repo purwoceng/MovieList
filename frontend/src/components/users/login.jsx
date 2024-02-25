@@ -35,11 +35,13 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         try {
             const response = await axiosApi.post("/login", formData);
             console.log("Response:", response.data);
             localStorage.setItem("token", response.data.token);
             setOpen(true); // Set open to true when login is successful
+            console.log(object);
         } catch (error) {
             console.error("There was an error signing in:", error);
             setErrorMessage("Incorrect Email or Password");

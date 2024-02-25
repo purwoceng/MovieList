@@ -3,13 +3,14 @@ import { Modal, Typography, Button, ButtonGroup, Grid, Box, CircularProgress, us
 import { Movie as MovieIcon, Theaters, Language, PlusOne, Favorite, FavoriteBorderOutlined, Remove, ArrowBack, } from '@mui/icons-material'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
+// import axios, { Axios } from 'axios'
+import { axiosApi } from "../../api/api";
 import { useGetMovieQuery, useGetRecomendationsQuery } from '../../services/TMDB'
 import { useTheme } from '@mui/material/styles'
 import genreIcons from "../../assets/genres";
 import { MovieList } from '..'
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
-
+import { jwtDecode } from "jwt-decode";
 
 // import useStyles from './styles'
 
@@ -17,18 +18,43 @@ const MovieInformation = () => {
   const theme = useTheme()
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const token = localStorage.getItem("token");
+  const decoded = token ? jwtDecode(token) : null; // Initialize decoded with jwtDecode(token)
+
+  const { id } = useParams()
   const isMovieFavorited = false;
   const isMovieWatchlisted = false;
-  const addToFavorites = () => {
+  const userId = decoded ? decoded.id : null; 
 
+  useEffect(() => {
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [token]);
+
+
+  console.log("id", id);
+  console.log("isLoggedIn", isLoggedIn);
+  console.log("decoded", decoded);
+  console.log("userId", userId);
+
+
+
+  const addToFavorites = async () => {
+    await axiosApi.post(`/favorite/${id}`, {
+
+    })
   }
 
   const addToWatchlist = () => {
 
   }
 
-  const { id } = useParams()
+
   const { data, isFetching, error } = useGetMovieQuery(id)
   const { data: recommendations, isFetching: isRecomendationsFetching } = useGetRecomendationsQuery({ list: 'recommendations', movie_id: id });
   // const classes = useStyles()
@@ -55,6 +81,7 @@ const MovieInformation = () => {
         display: 'flex',
         justifyContent: 'space-around',
         margin: '10px 0 !important',
+        flexWrap: 'wrap',
         [theme.breakpoints.down('sm')]: {
           flexDirection: 'column',
           flexWrap: 'wrap'
@@ -75,7 +102,6 @@ const MovieInformation = () => {
               width: '50%',
               height: '350px',
               marginBottom: '50px',
-
             },
             [theme.breakpoints.down('sm')]: {
               width: '100%',
@@ -86,7 +112,6 @@ const MovieInformation = () => {
           src={`https://image.tmdb.org/t/p/w500/${data?.poster_path}`}
           alt={data?.title}
         />
-
       </Grid>
       <Grid item container direction={"column"} xs={12} sm={12} lg={7}>
         <Typography variant="h3" align="center" gutterBottom>{data?.title} ({data?.release_date.split('-')[0]})</Typography>
@@ -108,7 +133,6 @@ const MovieInformation = () => {
               flexDirection: 'row',
               alignItems: 'center', // Horizontally center the content
               textAlign: 'center', // Center text
-              // vertically align the content
               justifyContent: 'center',
               marginTop: 'auto',
               marginBottom: 'auto',
@@ -198,12 +222,16 @@ const MovieInformation = () => {
           }}
           >
             <ButtonGroup size="medium" variant="outlined" sx={{ '& > * + *': { marginLeft: '8px' } }}>
-              <Button onClick={addToFavorites} endIcon={isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />}>
-                {isMovieFavorited ? 'UnFavorite' : 'Favorites'}
-              </Button>
-              <Button onClick={addToWatchlist} endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}>
-                Watchlist
-              </Button>
+              {isLoggedIn && (
+                <>
+                  <Button onClick={addToFavorites} endIcon={isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />}>
+                    {isMovieFavorited ? 'UnFavorite' : 'Favorites'}
+                  </Button>
+                  <Button onClick={addToWatchlist} endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}>
+                    Watchlist
+                  </Button>
+                </>
+              )}
               <Button endIcon={<ArrowBack />} sx={{ borderColor: 'primary.main' }}>
                 <Typography style={{ textUnderLine: "none", textDecoration: 'none' }} component={Link} to="/" color="inherit" variant="subtitle2">
                   Back
@@ -228,7 +256,7 @@ const MovieInformation = () => {
         onClose={() => setOpen(false)}
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        {data?.videos?.results?.length > 0 &&(
+        {data?.videos?.results?.length > 0 && (
           <iframe
             autoPlay
             frameborder="0"
@@ -244,7 +272,7 @@ const MovieInformation = () => {
                 height: '100%',
               },
             }}
-            />
+          />
         )}
       </Modal>
     </Grid>
