@@ -5,41 +5,54 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authToken from "../middlewares/auth-token.js";
 import cors from "cors";
-// import { validateRegister, validateLogin } from "../middlewares/validator.js";
+import { validateRegister, validateLogin } from "../middlewares/validator.js";
 
 const prisma = new PrismaClient();
 const router = Router();
 router.use(cors());
 
-// router.post("/register", async (req, res) => {
-//   const { name, email, password, image } = req.body;
+router.post("/register", async (req, res) => {
+  const { name, email, password, image } = req.body;
 
-//   if (!name || !email || !password) {
-//     return res.status(400).json({ message: "All fields are required" });
-//   }
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
 
-//   const existUser = await prisma.user.findUnique({
-//     where: {
-//       email: email,
-//     },
-//   });
+  const existUser = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
 
-//   if (existUser) {
-//     return res.status(400).json({ message: "Email is already in use" });
-//   }
+  if (existUser) {
+    return res.status(400).json({ message: "Email is already in use" });
+  }
 
-//   const pass = await bcrypt.hash(password, 12);
-//   const user = await prisma.user.create({
-//     data: {
-//       name,
-//       email,
-//       password: pass,
-//       role_id: 1,
-//     },
-//   });
-//   if (!user) return res.status(400).json({ message: "User not created" });
-//   res.status(201).json({ user });
-// });
+  const pass = await bcrypt.hash(password, 12);
+  const user = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password: pass,
+      role_id: 1,
+    },
+  });
+  if (!user) return res.status(400).json({ message: "User not created" });
+
+  const payload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role_id: user.role_id,
+  };
+
+  const expiresIn = 60 * 60 * 24 * 30;
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: expiresIn,
+  });
+
+  res.status(201).json({ user, token });
+});
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -131,9 +144,8 @@ router.put("/profile", authToken, async (req, res) => {
   }
 });
 
-
 router.post("/register", (req, res) => {
-  res.json({message:"Sukses mencoba coba dengan post register "});
+  res.json({ message: "Sukses mencoba coba dengan post register " });
 });
 
 export default router;
