@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, InputAdornment } from "@mui/material";
+import { TextField, InputAdornment, Box } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
@@ -17,8 +17,8 @@ const Search = () => {
   };
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         [theme.breakpoints.down("sm")]: {
           display: "flex",
           justifyContent: "center",
@@ -47,7 +47,7 @@ const Search = () => {
           ),
         }}
       />
-    </div>
+    </Box>
   );
 };
 
