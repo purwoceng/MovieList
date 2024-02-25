@@ -10,7 +10,7 @@ const FeaturedMovie = ({ movie }) => {
     <Box
       component={Link}
       to={`/movies/${movie.id}`}
-      style={{
+      sx={{
         marginBottom: "20px",
         display: "flex",
         justifyContent: "center",
@@ -19,41 +19,37 @@ const FeaturedMovie = ({ movie }) => {
       }}
     >
       <Card
-        className={theme.card}
-        theme={{ root: theme.cardRoot }}
-        style={{
+        sx={{
           width: "100%",
           display: "flex",
+          height: "490px",
           justifyContent: "flex-end",
           flexDirection: "column",
-          position: "relative",
         }}
       >
         <CardMedia
-          className={theme.cardMedia}
           media="image"
           alt={movie.title}
           image={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`}
           onError={(e) => {
             e.target.src = `https://image.tmdb.org/t/o/original/${movie.backdrop_path}`;
           }}
-          style={{
+          sx={{
             position: "absolute",
             top: 0,
             right: 0,
             height: "100%",
             width: "100%",
             backgroundColor: "rgba(0, 0, 0, 0.575)",
-            backgroundBlendMode: "darken",
+            backgroundBlendMode: "darken",     
           }}
         ></CardMedia>
         <Box padding="20px">
           <CardContent
-            className={theme.cardContent}
-            theme={{ root: theme.cardContentRoot }}
-            style={{
+            sx={{
               color: "#fff",
               width: "40%",
+              // [theme.breakpoints.down("sm")]
               [theme.breakpoints.down("sm")]: {
                 width: "100%",
               },
@@ -61,7 +57,7 @@ const FeaturedMovie = ({ movie }) => {
           >
             <Typography
               variant="h5"
-              gutterBottom={movie.title}
+              gutterBottom
               style={{
                 position: "relative",
                 backgroundColor: "transparant",
@@ -77,7 +73,7 @@ const FeaturedMovie = ({ movie }) => {
                 textAlign: "justify",
               }}
             >
-              {movie.overview}{" "}
+              {movie.overview}
             </Typography>
           </CardContent>
         </Box>

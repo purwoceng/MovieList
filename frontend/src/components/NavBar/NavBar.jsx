@@ -8,7 +8,7 @@ import {
   useMediaQuery,
   Box,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Menu,
   AccountCircle,
@@ -18,12 +18,16 @@ import {
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { Sidebar, Search } from "..";
+import { ColorModeContext } from "../../utils/ToggleColorMode";
+
 const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isAuthenticated = true;
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const drawerWidth = 240;
+
+  const ColorMode = useContext(ColorModeContext);
   return (
     <>
       <AppBar position="fixed">
@@ -55,7 +59,7 @@ const NavBar = () => {
               <Menu />
             </IconButton>
           )}
-          <IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
+          <IconButton color="inherit" sx={{ ml: 1 }} onClick={ColorMode.toggleColorMode}>
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           {!isMobile && <Search />}

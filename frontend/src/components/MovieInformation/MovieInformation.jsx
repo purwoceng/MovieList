@@ -31,7 +31,6 @@ const MovieInformation = () => {
   const { id } = useParams()
   const { data, isFetching, error } = useGetMovieQuery(id)
   const { data: recommendations, isFetching: isRecomendationsFetching } = useGetRecomendationsQuery({ list: 'recommendations', movie_id: id });
-  // const classes = useStyles()
   console.log(recommendations)
 
   if (isFetching) {
@@ -55,32 +54,43 @@ const MovieInformation = () => {
         display: 'flex',
         justifyContent: 'space-around',
         margin: '10px 0 !important',
-        [theme.breakpoints.down('sm')]: {
+        // xs
+        [theme.breakpoints.down("sm")]: {
           flexDirection: 'column',
           flexWrap: 'wrap'
         },
       }}
     >
       <Grid item sm={12} lg={4} xl={3} sx={{
-        justifyContent: 'center',
+        [theme.breakpoints.down('lg')]: {
+          display: 'flex',
+          justifyContent: 'center',
+        }
       }} >
-        <img
-          style={{
+        <Box
+          component="img"
+          sx={{
             borderRadius: '20px',
             boxShadow: '0.5em 1em 1em rgb(64, 64, 70)',
-            width: '80%',
-            margin: '0 auto', // Center the image horizontally
-            objectFit: 'cover',
-            [theme.breakpoints.down('md')]: {
+            width: '100%',
+            [theme.breakpoints.down('lg')]: {
               width: '50%',
-              height: '350px',
+              // height: '350px',
               marginBottom: '50px',
-
+              mx: 'auto',
             },
-            [theme.breakpoints.down('sm')]: {
-              width: '100%',
-              height: '350px',
-              marginBottom: '50px',
+            // [theme.breakpoints.down('md')]: {
+            //   width: '60%',
+            //   // height: '350px',
+            //   marginBottom: '50px',
+            //   mx: 'auto',
+            // },
+            // xs
+            [theme.breakpoints.down("sm")]: {
+              mx: 'auto',
+              width: '50%',
+              // height: '350px',
+              marginBottom: '30px',
             },
           }}
           src={`https://image.tmdb.org/t/p/w500/${data?.poster_path}`}
@@ -96,7 +106,8 @@ const MovieInformation = () => {
             display: 'flex',
             justifyContent: 'space-around',
             margin: '10px 0 !important',
-            [theme.breakpoints.down('sm')]: {
+            // xs
+            [theme.breakpoints.down("sm")]: {
               flexDirection: 'column',
               flexWrap: 'wrap'
             },
@@ -117,7 +128,7 @@ const MovieInformation = () => {
             <Rating readOnly value={data?.vote_average / 2} precision={0.1} />
             <Typography variant="subtitle1" gutterBottom style={{ marginLeft: '10px' }}>{data?.vote_average} / 10</Typography>
           </Box>
-          <Typography variant="h6" align="center" gutterBottom>{data?.runtime} min</Typography>
+          <Typography variant="h6" align="center" gutterBottom>{data?.runtime} min | {data?.spoken_languages.length > 0 ? data?.spoken_languages[0].name : ''}</Typography>
         </Grid>
         <Grid item
           sx={{
@@ -133,29 +144,30 @@ const MovieInformation = () => {
             // MASIH BELUM BERES
             // HARUSNYA ICON DAN NAMA GENRE SEBELAHAN BUKAN ATAS-BAWAH
             // KALO KLIK LOGO BELUM BALIK KE HOME TAPI KALO onClick={()=>dispatch(selectGenreOrCategory(genre.id))} DIHAPUS BARU BISA BALIK KE HOME
-            <Link key={genre.i} to={`/`} onClick={() => dispatch(selectGenreOrCategory(genre.id))}
+            <Box component={Link} key={genre.i} to={`/`} onClick={() => dispatch(selectGenreOrCategory(genre.id))}
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                [theme.breakpoints.down('sm')]: {
+                [theme.breakpoints.down("sm")]: {
                   padding: '0.5rem 1rem',
                 }
               }}
             >
-              <img
+              <Box
+                component={'img'}
                 src={genreIcons[genre.name.toLowerCase()]}
-                style={{
+                sx={{
                   filter:
                     theme.palette.mode === "dark" && "invert(1)",
                   marginRight: "10px",
                 }}
                 height={30}
               />
-              <Typography color="textPrimary" variant="subtitle1" style={{ textUnderLine: "none" }} >
+              <Typography color="textPrimary" variant="subtitle1" >
                 {genre.name}
               </Typography>
-            </Link>
+            </Box>
           ))}
         </Grid>
 
@@ -172,32 +184,33 @@ const MovieInformation = () => {
             </Grid>
           )).splice(0, 6)}
         </Grid>
-        <Grid item container style={{ marginTop: '2rem' }}>
-          <Grid item xs={12} sm={6} style={{
+        <Grid item container sx={{ marginTop: '2rem' }}>
+          <Grid item xs={12} sm={6} sx={{
             display: 'flex',
             justifyContent: 'space-between',
             width: '100%',
-            [theme.breakpoints.down('sm')]: {
+            [theme.breakpoints.down("sm")]: {
               flexDirection: 'column',
             }
           }}>
             <ButtonGroup size="small" variant="outlined">
               <Button target="_blank" rel="noopener noreferrer" href={data?.homepage} endIcon={<Language />}>Website</Button>
               <Button target="_blank" rel="noopener noreferrer" href={`https://www.imdb.com/title/${data?.imdb_id}`} endIcon={<MovieIcon />}>IMBD</Button>
-              <Button onClick={() => setOpen(true)} href="#" endIcon={<Theaters />}>Trailer
+              <Button onClick={() => setOpen(true)} href="#" endIcon={<Theaters />}>
+                Trailer
               </Button>
             </ButtonGroup>
           </Grid>
-          <Grid item xs={12} sm={6} style={{
+          <Grid item xs={12} sm={6} sx={{
             display: 'flex',
             justifyContent: 'space-between',
             width: '100%',
-            [theme.breakpoints.down('sm')]: {
+            [theme.breakpoints.down("sm")]: {
               flexDirection: 'column',
             }
           }}
           >
-            <ButtonGroup size="medium" variant="outlined" sx={{ '& > * + *': { marginLeft: '8px' } }}>
+            <ButtonGroup size="small" variant="outlined" sx={{ '& > * + *': { marginLeft: '8px' } }}>
               <Button onClick={addToFavorites} endIcon={isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />}>
                 {isMovieFavorited ? 'UnFavorite' : 'Favorites'}
               </Button>
@@ -205,7 +218,7 @@ const MovieInformation = () => {
                 Watchlist
               </Button>
               <Button endIcon={<ArrowBack />} sx={{ borderColor: 'primary.main' }}>
-                <Typography style={{ textUnderLine: "none", textDecoration: 'none' }} component={Link} to="/" color="inherit" variant="subtitle2">
+                <Typography style={{ textUnderLine: "none", textDecoration: 'none' }} component={Link} to="/" color="inherit" variant="su">
                   Back
                 </Typography>
               </Button>
@@ -228,23 +241,24 @@ const MovieInformation = () => {
         onClose={() => setOpen(false)}
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        {data?.videos?.results?.length > 0 &&(
-          <iframe
+        {data?.videos?.results?.length > 0 && (
+          <Box
+            component={"iframe"}
             autoPlay
             frameborder="0"
             title="Trailer"
             src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
             allow="autoplay"
             allowfullscreen
-            style={{
+            sx={{
               width: '50%',
               height: '50%',
-              [theme.breakpoints.down('sm')]: {
+              [theme.breakpoints.down("sm")]: {
                 width: '100%',
                 height: '100%',
               },
             }}
-            />
+          />
         )}
       </Modal>
     </Grid>

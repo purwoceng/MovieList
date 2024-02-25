@@ -14,14 +14,15 @@ const Movies = () => {
   const { genreIdOrCategoryName, searchQuery } = useSelector(
     (state) => state.currentGenreOrCategory
   );
-  const lg = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const numberOfMovies = lg ? 16 : 18;
-
   const { data, error, isFetching } = useGetMoviesQuery({
     genreIdOrCategoryName,
     page,
     searchQuery,
   });
+  const lg = useMediaQuery((theme) => theme.breakpoints.only("lg"));
+ 
+  const numberOfMovies = lg ? 16 : 18;
+
 
   console.log(data);
   if (isFetching) {
