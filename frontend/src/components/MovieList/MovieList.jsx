@@ -4,7 +4,6 @@ import { useTheme } from "@mui/material/styles";
 import { Movie } from "..";
 
 const MovieList = ({ movies, numberOfMovies, excludeFirst }) => {
-  // const classes = useStyles(); // Uncomment if you plan to use useStyles
   const startFrom = excludeFirst ? 1 : 0;
   const theme = useTheme();
   return (

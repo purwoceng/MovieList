@@ -37,8 +37,10 @@ router.post("/register", async (req, res) => {
       role_id: 1,
     },
   });
-  if (!user) return res.status(400).json({ message: "User not created" });
-  res.status(201).json({ user });
+  if (!user) {
+    return res.status(400).json({ message: "User not created" });
+  }
+  res.status(201).json({ message: "register success", user: user });
 });
 
 router.post("/login", async (req, res) => {
@@ -132,10 +134,6 @@ router.put("/profile", authToken, async (req, res) => {
 });
 
 
-// router.post("/register", (req, res) => {
-//   res.json({message:"Sukses mencoba coba dengan post register "});
-// });
-
 router.get("/check-login", authToken, async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ error: "Token is required" });
@@ -154,21 +152,22 @@ router.get("/check-login", authToken, async (req, res) => {
 });
 
 
-router.post("add-to-watchlist", authToken, async (req, res) => {
+router.post("/add-to-favorite", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;
-  res.json({ user:user_id, movie:movie_id });
-  // try {
-  //   const watchlist = await prisma.watchlist.create({
-  //     data: {
-  //       user_id,
-  //       movie_id,
-  //     },
-  //   });
-  //   res.json(watchlist);
-  // } catch (error) {
-  //   console.error("Error adding movie to watchlists:", error);
-  //   res.status(500).json({ error: "Failed to add movie to watchlists" });
-  // }
+  // res.json({ user:user_id, movie:movie_id });
+  try {
+    const watchlist = await prisma.watchlist.create({
+      data: {
+        user_id,
+        movie_id,
+      },
+    });
+    return res.status(201).json({ message: "add to favorite success", watchlist: watchlist });
+
+  } catch (error) {
+    console.error("Error adding movie to favorites:", error);
+    return res.status(500).json({ error: "Failed to add movie to favorites" });
+  }
 });
 
 export default router;
