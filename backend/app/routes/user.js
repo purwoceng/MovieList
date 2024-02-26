@@ -37,6 +37,11 @@ router.post("/register", async (req, res) => {
       role_id: 1,
     },
   });
+  /* `<<<<<<<` is a version control conflict marker that indicates the beginning of a conflict in the
+  code. It is typically used in version control systems like Git to highlight areas where conflicting
+  changes have been made by different contributors. In this case, it seems like there was a conflict
+  in the code that was not resolved properly, resulting in the presence of the conflict marker
+  `<<<<<<< HEAD`. */
   if (!user) return res.status(400).json({ message: "User not created" });
 
   const payload = {
@@ -144,8 +149,85 @@ router.put("/profile", authToken, async (req, res) => {
   }
 });
 
-router.post("/register", (req, res) => {
-  res.json({ message: "Sukses mencoba coba dengan post register " });
+router.post("/add-to-favorite", authToken, async (req, res) => {
+
+  const { user_id, movie_id } = req.body;
+  try {
+    const favoriteItem = await prisma.watchlist.create({
+      data: {
+        user_id: Number(user_id),
+        movie_id: Number(movie_id),
+      }
+    });
+    return res.status(200).json({ message: "added to favorite" });
+    // res.json(favoriteItem);
+  } catch (error) {
+    console.error("Error adding movie to favorite:", error);
+    return res.status(500).json({ error: "Failed to add movie to favorite" });
+  }
 });
+
+router.post("/add-to-watchlist", authToken, async (req, res) => {
+
+  const { user_id, movie_id } = req.body;
+  try {
+    const favoriteItem = await prisma.watchlist.create({
+      data: {
+        user_id: Number(user_id),
+        movie_id: Number(movie_id),
+      }
+    });
+    return res.status(200).json({ message: "added to favorite" });
+    // res.json(favoriteItem);
+  } catch (error) {
+    console.error("Error adding movie to favorite:", error);
+    return res.status(500).json({ error: "Failed to add movie to favorite" });
+  }
+});
+
+router.get("/favorite", authToken, async (req, res) => {
+  const { user_id } = req.body;
+  const favoriteMovies = await prisma.watchlist.findMany({
+    where: {
+      user_id: Number(user_id),
+    }
+  })
+  return res.status(200).json(favoriteMovies);
+})
+
+router.get("/watchlist", authToken, async (req, res) => {
+  const { user_id } = req.body;
+  const watchlistMovies = await prisma.watchlist.findMany({
+    where: {
+      user_id: Number(user_id),
+    }
+  })
+  return res.status(200).json(watchlistMovies);
+})
+
+router.delete("/favorite", authToken, async (req, res) => {
+  const { user_id, movie_id } = req.body;
+  try {
+    const favoriteMovies = await prisma.watchlist.deleteMany({
+      where: {
+        user_id: Number(user_id),
+        movie_id: Number(movie_id),
+      }
+      
+    })
+  } catch (error) {
+    
+  }
+})
+
+router.delete("/watchlist", authToken, async (req, res) => {
+  const { user_id, movie_id } = req.body;
+  watchlistMovies = await prisma.watchlist.deleteMany({
+    where: {
+      user_id: Number(user_id),
+      movie_id: Number(movie_id),
+    }
+  })
+})
 
 export default router;
