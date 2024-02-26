@@ -46,22 +46,61 @@ const MovieInformation = () => {
   const decoded = token ? jwtDecode(token) : null; // Initialize decoded with jwtDecode(token)
 
   const { id } = useParams();
-  const isMovieFavorited = false;
-  const isMovieWatchlisted = false;
+  // const isMovieFavorited = false;
+  // const isMovieWatchlisted = false;
+  const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+  const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(false);
   const userId = decoded ? decoded.id : null;
 
   useEffect(() => {
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [token]);
+    setIsMovieWatchlisted(false);
+    setIsMovieFavorited(false);
+  }, []);
 
   console.log("id", id);
   console.log("isLoggedIn", isLoggedIn);
   console.log("decoded", decoded);
   console.log("userId", userId);
+
+  useEffect(() => {
+    const checkFavorites = async () => {
+      try {
+        const response = await axiosApi.get(`/check-favorite/${userId}/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.data.exists) {
+          setIsMovieFavorited(true);
+        }
+      } catch (error) {
+        console.error("Error checking favorites:", error);
+      }
+    };
+
+    const checkWatchlist = async () => {
+      try {
+        const response = await axiosApi.get(
+          `/check-watchlist/${userId}/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.exists) {
+          setIsMovieWatchlisted(true);
+        }
+      } catch (error) {
+        console.error("Error checking watchlist:", error);
+      }
+    };
+
+    if (userId) {
+      checkFavorites();
+      checkWatchlist();
+    }
+  }, [userId, id, token]);
 
   const addToFavorites = async () => {
     try {
@@ -78,6 +117,7 @@ const MovieInformation = () => {
         }
       );
       console.log(response.data); // Log the response data for debugging
+      setIsMovieFavorited(!isMovieFavorited);
     } catch (error) {
       console.error("Error adding to favorites:", error);
       // Handle error appropriately
@@ -91,7 +131,7 @@ const MovieInformation = () => {
         {
           user_id: userId,
           movie_id: id,
-          status: false,
+          // status: false,
         },
         {
           headers: {
@@ -100,6 +140,7 @@ const MovieInformation = () => {
         }
       );
       console.log(response.data); // Log the response data for debugging
+      setIsMovieWatchlisted(true);
     } catch (error) {
       console.error("Error adding to favorites:", error);
       // Handle error appropriately
@@ -398,7 +439,7 @@ const MovieInformation = () => {
                     onClick={addToWatchlist}
                     endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}
                   >
-                    Watchlist
+                    {isMovieWatchlisted ? "Remove Watchlist" : "Add Watchlist"}
                   </Button>
                 </>
               )}

@@ -150,14 +150,13 @@ router.put("/profile", authToken, async (req, res) => {
 });
 
 router.post("/add-to-favorite", authToken, async (req, res) => {
-
   const { user_id, movie_id } = req.body;
   try {
-    const favoriteItem = await prisma.watchlist.create({
+    const favoriteItem = await prisma.wishlist.create({
       data: {
         user_id: Number(user_id),
         movie_id: Number(movie_id),
-      }
+      },
     });
     return res.status(200).json({ message: "added to favorite" });
     // res.json(favoriteItem);
@@ -168,16 +167,15 @@ router.post("/add-to-favorite", authToken, async (req, res) => {
 });
 
 router.post("/add-to-watchlist", authToken, async (req, res) => {
-
   const { user_id, movie_id } = req.body;
   try {
     const favoriteItem = await prisma.watchlist.create({
       data: {
         user_id: Number(user_id),
         movie_id: Number(movie_id),
-      }
+      },
     });
-    return res.status(200).json({ message: "added to favorite" });
+    return res.status(200).json({ message: "added to watchlist" });
     // res.json(favoriteItem);
   } catch (error) {
     console.error("Error adding movie to favorite:", error);
@@ -190,20 +188,20 @@ router.get("/favorite", authToken, async (req, res) => {
   const favoriteMovies = await prisma.watchlist.findMany({
     where: {
       user_id: Number(user_id),
-    }
-  })
+    },
+  });
   return res.status(200).json(favoriteMovies);
-})
+});
 
 router.get("/watchlist", authToken, async (req, res) => {
   const { user_id } = req.body;
   const watchlistMovies = await prisma.watchlist.findMany({
     where: {
       user_id: Number(user_id),
-    }
-  })
+    },
+  });
   return res.status(200).json(watchlistMovies);
-})
+});
 
 router.delete("/favorite", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;
@@ -212,13 +210,10 @@ router.delete("/favorite", authToken, async (req, res) => {
       where: {
         user_id: Number(user_id),
         movie_id: Number(movie_id),
-      }
-      
-    })
-  } catch (error) {
-    
-  }
-})
+      },
+    });
+  } catch (error) {}
+});
 
 router.delete("/watchlist", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;
@@ -226,8 +221,8 @@ router.delete("/watchlist", authToken, async (req, res) => {
     where: {
       user_id: Number(user_id),
       movie_id: Number(movie_id),
-    }
-  })
-})
+    },
+  });
+});
 
 export default router;
