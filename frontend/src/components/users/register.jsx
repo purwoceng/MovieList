@@ -21,28 +21,37 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { useNavigate } from "react-router-dom";
 
-
-
-
 function SignUp() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [open, setOpen] = useState(false); // State untuk mengontrol visibilitas modal alert
-  const [required, setRequired] = useState(false); // State untuk menunjukkan apakah form terisi semua
-  const [message, setMessage] = useState("")
-  
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [required, setRequired] = useState(false);
+  const [message, setMessage] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [emailTaken, setEmailTaken] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  
+  const handleClickShowPassword1 = () => {
+    setShowPassword1(!showPassword1);
+  };
+
+  const handleMouseDownPassword1 = (event) => {
+    event.preventDefault();
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevState) => ({
@@ -50,48 +59,77 @@ function SignUp() {
       [name]: value,
     }));
   };
+
   const navigate = useNavigate();
-  
+
   const handleModalClose = () => {
-    setOpen(false); // Close the registration modal
-    navigate("/login"); // Redirect to the login page
+    setOpen(false);
+    setEmailTaken(false);
+    setEmailError("");
+    setPasswordError("");
   };
-  
-  
+
   const handleRequired = () => {
     setRequired(false);
   };
-  
+
+  const isEmailValid = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.password) {
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
       setRequired(true);
       return;
     }
-    
+
+    // Check if email format is valid
+    if (!isEmailValid(formData.email)) {
+      setEmailError("Invalid email format");
+      return;
+    }
+
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
     axiosApi
-    .post("/register", {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-    })
-    .then((response) => {
+      .post("/register", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      })
+      .then((response) => {
         console.log("Response:", response.data.response);
-        setOpen(true); // Tampilkan modal alert setelah berhasil mendaftar
+        setOpen(true);
         setFormData({
-          // Kosongkan form setelah berhasil submit
           name: "",
           email: "",
           password: "",
+          confirmPassword: "",
         });
+        localStorage.setItem("token", response.data.token);
+        navigate("/");
       })
       .catch((error) => {
         console.error("There was an error signing up:", error.response.data);
-        setMessage(error.response.data.message);
+        if (error.response.data.message === "Email already in use") {
+          setEmailTaken(true);
+        } else {
+          setMessage(error.response.data.message);
+        }
       });
   };
-
 
   return (
     <ThemeProvider theme={createTheme()}>
@@ -142,6 +180,9 @@ function SignUp() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
+                  helperText="Please enter your email address"
+                  error={!!emailError || emailTaken}
+                  FormHelperTextProps={{ error: true }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -164,6 +205,39 @@ function SignUp() {
                           onMouseDown={handleMouseDownPassword}
                         >
                           {showPassword ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type={showPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  error={!!passwordError}
+                  helperText={passwordError}
+                  FormHelperTextProps={{ error: true }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword1}
+                          onMouseDown={handleMouseDownPassword1}
+                        >
+                          {showPassword1 ? (
                             <VisibilityIcon />
                           ) : (
                             <VisibilityOffIcon />
@@ -209,6 +283,38 @@ function SignUp() {
         </DialogActions>
       </Dialog>
 
+      {/* Modal for email already in use */}
+      <Dialog open={emailTaken} onClose={handleModalClose}>
+        <DialogTitle>Email Already in Use</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            The email you entered is already associated with an existing
+            account. Please use a different email address.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleModalClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal for invalid email format */}
+      <Dialog open={!!emailError} onClose={handleModalClose}>
+        <DialogTitle>Invalid Email Format</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Please enter a valid email address.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleModalClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal for required fields */}
       <Dialog open={required} onClose={handleRequired}>
         <DialogTitle>Required</DialogTitle>
         <DialogContent>

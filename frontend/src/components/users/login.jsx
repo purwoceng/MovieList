@@ -1,6 +1,7 @@
 import React from "react";
-import { Button, TextField, Grid, Paper } from "@mui/material";
+import { Button, TextField, Grid, Paper, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Link from "@mui/material/Link";
 import { axiosApi } from "../../api/api";
 import {
     Dialog,
@@ -10,7 +11,6 @@ import {
 } from "@mui/material";
 
 const Login = () => {
-
     const navigate = useNavigate();
     const [formData, setFormData] = React.useState({
         email: "",
@@ -40,6 +40,7 @@ const Login = () => {
             console.log("Response:", response.data);
             localStorage.setItem("token", response.data.token);
             setOpen(true); // Set open to true when login is successful
+            navigate("/");
         } catch (error) {
             console.error("There was an error signing in:", error);
             setErrorMessage("Incorrect Email or Password");
@@ -68,10 +69,17 @@ const Login = () => {
             >
                 <Paper elevation={3} style={{ padding: 20, width: "100%" }}>
                     <img
-                        src="https://fontmeme.com/permalink/240221/06da7b28bee6adaad2438f1dec7814ac.png"
+                        src="https://fontmeme.com/permalink/240225/faea312e9c50e22410269ab0d1bdc488.png"
                         alt="Logo"
-                        style={{ display: "block", margin: "20px auto", width: "75%" }}
+                        style={{ display: "block", margin: "10px auto", width: "55%" }}
                     />
+                    <Typography
+                        component="h1"
+                        variant="h2"
+                        style={{ textAlign: "center" }}
+                    >
+                        Login
+                    </Typography>
                     <form onSubmit={handleSubmit}>
                         <div>
                             <TextField
@@ -110,6 +118,13 @@ const Login = () => {
                             >
                                 Login
                             </Button>
+                            <Grid container justifyContent="flex-end">
+                                <Grid item style={{ marginTop: "10px" }}>
+                                    <Link href="/register" variant="body2">
+                                        Belum Punya akun?? Daftar dulu
+                                    </Link>
+                                </Grid>
+                            </Grid>
                         </div>
                     </form>
                 </Paper>
@@ -122,13 +137,14 @@ const Login = () => {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {"Sign Up Successful"}
+                    {open ? "Login Error" : "Sign Up Successful"}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContent>
                         <p>
-                            You have successfully logged in. Please proceed to the movies
-                            page.
+                            {open
+                                ? "Incorrect Email or Password"
+                                : "You have successfully logged in. Please proceed to the movies page."}
                         </p>
                     </DialogContent>
                 </DialogContent>
@@ -161,7 +177,4 @@ const Login = () => {
     );
 };
 
-
-
 export default Login;
-
