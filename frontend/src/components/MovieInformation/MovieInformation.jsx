@@ -26,7 +26,7 @@ const MovieInformation = () => {
   const { id } = useParams()
   const isMovieFavorited = false;
   const isMovieWatchlisted = false;
-  const userId = decoded ? decoded.id : null; 
+  const userId = decoded ? decoded.id : null;
 
   useEffect(() => {
     if (token) {
@@ -60,14 +60,24 @@ const MovieInformation = () => {
       // Handle error appropriately
     }
   }
-  
+
 
   const addToWatchlist = async () => {
-    await axiosApi.post(`/add-to-watchlist`, {
-      user_id: userId,
-      movie_id: id,
-      status: "not watched"
-    })
+    try {
+      const response = await axiosApi.post(`/add-to-watchlist`, {
+        user_id: userId,
+        movie_id: id,
+        status: false
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}` // Attach token to the request headers
+        }
+      });
+      console.log(response.data); // Log the response data for debugging
+    } catch (error) {
+      console.error('Error adding to favorites:', error);
+      // Handle error appropriately
+    }
   }
 
   const { data, isFetching, error } = useGetMovieQuery(id)
@@ -250,13 +260,17 @@ const MovieInformation = () => {
           }}
           >
             <ButtonGroup size="small" variant="outlined" sx={{ '& > * + *': { marginLeft: '8px' } }}>
-              <Button onClick={addToFavorites} endIcon={isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />}>
-                {isMovieFavorited ? 'UnFavorite' : 'Favorites'}
-              </Button>
-              <Button onClick={()=>addToWatchlist()} endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}>
-                Watchlist
-              </Button>
-              <Button onClick={()=>addToWatchlist()} endIcon={<ArrowBack />} sx={{ borderColor: 'primary.main' }}>
+              {userId !== null && (
+                <>
+                  <Button onClick={addToFavorites} endIcon={isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />}>
+                    {isMovieFavorited ? 'UnFavorite' : 'Favorites'}
+                  </Button>
+                  <Button onClick={addToWatchlist} endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}>
+                    Watchlist
+                  </Button>
+                </>
+              )}
+              <Button onClick={() => addToWatchlist()} endIcon={<ArrowBack />} sx={{ borderColor: 'primary.main' }}>
                 <Typography style={{ textUnderLine: "none", textDecoration: 'none' }} component={Link} to="/" color="inherit" variant="su">
                   Back
                 </Typography>
