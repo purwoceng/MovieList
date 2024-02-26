@@ -185,17 +185,49 @@ router.post("/add-to-watchlist", authToken, async (req, res) => {
   }
 });
 
-
-
 router.get("/favorite", authToken, async (req, res) => {
+  const { user_id } = req.body;
+  const favoriteMovies = await prisma.watchlist.findMany({
+    where: {
+      user_id: Number(user_id),
+    }
+  })
+  return res.status(200).json(favoriteMovies);
+})
+
+router.get("/watchlist", authToken, async (req, res) => {
+  const { user_id } = req.body;
+  const watchlistMovies = await prisma.watchlist.findMany({
+    where: {
+      user_id: Number(user_id),
+    }
+  })
+  return res.status(200).json(watchlistMovies);
+})
+
+router.delete("/favorite", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;
-  favoriteMovies = await prisma.watchlist.findMany({
+  try {
+    const favoriteMovies = await prisma.watchlist.deleteMany({
+      where: {
+        user_id: Number(user_id),
+        movie_id: Number(movie_id),
+      }
+      
+    })
+  } catch (error) {
+    
+  }
+})
+
+router.delete("/watchlist", authToken, async (req, res) => {
+  const { user_id, movie_id } = req.body;
+  watchlistMovies = await prisma.watchlist.deleteMany({
     where: {
       user_id: Number(user_id),
       movie_id: Number(movie_id),
     }
   })
-  return res.status(200).json(favoriteMovies);
 })
 
 export default router;
