@@ -492,8 +492,8 @@ const MovieInformation = () => {
               width: "50%",
               height: "50%",
               [theme.breakpoints.down("sm")]: {
-                width: "100%",
-                height: "100%",
+                width: '100%',
+                height: '50%',
               },
             }}
           />
