@@ -54,5 +54,4 @@ export const tmdbApi = createApi({
   }),
 });
 
-export const { useGetMoviesQuery, useGetGenresQuery, useGetMovieQuery,useGetRecomendationsQuery,useGetActorsDetailsQuery,
-useGetMoviesByActorIdQuery} = tmdbApi;
+export const { useGetMoviesQuery, useGetGenresQuery, useGetMovieQuery,useGetRecomendationsQuery,useGetActorsDetailsQuery, useGetMoviesByActorIdQuery} = tmdbApi;
