@@ -19,6 +19,7 @@ const MovieInformation = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(null);
 
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null; // Initialize decoded with jwtDecode(token)
@@ -27,6 +28,20 @@ const MovieInformation = () => {
   const isMovieFavorited = false;
   const isMovieWatchlisted = false;
   const userId = decoded ? decoded.id : null;
+
+  if(userId !== null){
+    const checkFavorite = async () => {
+      try {
+        const response = await axiosApi.get(`/check-favorite`, {
+          user_id: userId,
+          movie_id: id
+        });
+      }
+      catch (error) {
+       
+      }
+    }
+  }
 
   useEffect(() => {
     if (token) {

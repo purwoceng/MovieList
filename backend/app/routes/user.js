@@ -195,15 +195,7 @@ router.get("/favorite", authToken, async (req, res) => {
   return res.status(200).json(favoriteMovies);
 })
 
-router.get("/watchlist", authToken, async (req, res) => {
-  const { user_id } = req.body;
-  const watchlistMovies = await prisma.watchlist.findMany({
-    where: {
-      user_id: Number(user_id),
-    }
-  })
-  return res.status(200).json(watchlistMovies);
-})
+
 
 router.delete("/favorite", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;
@@ -220,6 +212,16 @@ router.delete("/favorite", authToken, async (req, res) => {
   }
 })
 
+router.get("/watchlist", authToken, async (req, res) => {
+  const { user_id } = req.body;
+  const watchlistMovies = await prisma.watchlist.findMany({
+    where: {
+      user_id: Number(user_id),
+    }
+  })
+  return res.status(200).json(watchlistMovies);
+})
+
 router.delete("/watchlist", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;
   watchlistMovies = await prisma.watchlist.deleteMany({
@@ -229,5 +231,7 @@ router.delete("/watchlist", authToken, async (req, res) => {
     }
   })
 })
+
+
 
 export default router;
