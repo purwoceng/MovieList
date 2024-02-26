@@ -33,7 +33,7 @@ const Profile = () => {
   }, [tokenExpired]);
 
   const Logout = () => {
-    alert("Apakah anda yakin keluar");
+    confirm("Are you sure you want to logout?");
     localStorage.clear();
     navigate("/login");
   };
