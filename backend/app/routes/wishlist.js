@@ -4,25 +4,7 @@ import authToken from "../middlewares/auth-token.js";
 
 const router = Router();
 
-router.post("/wishlist", authToken, async (req, res) => {
-  const user_id = req.user.id;
-  try {
-    const { movie_id } = req.body;
 
-    // Menambahkan film ke wishlist
-    const wishlistItem = await prisma.wishlist.create({
-      data: {
-        user_id,
-        movie_id,
-      },
-    });
-
-    res.json(wishlistItem);
-  } catch (error) {
-    console.error("Error adding movie to wishlist:", error);
-    res.status(500).json({ error: "Failed to add movie to wishlist" });
-  }
-});
 
 router.get("/wishlist", authToken, async (req, res) => {
   const user_id = req.user.id;
@@ -71,5 +53,40 @@ router.get(
     }
   }
 );
+
+
+router.post("/add-to-favorite", authToken, async (req, res) => {
+  const { user_id, movie_id } = req.body;
+  try {
+    const favoriteItem = await prisma.wishlist.create({
+      data: {
+        user_id: Number(user_id),
+        movie_id: Number(movie_id),
+      },
+    });
+    return res.status(200).json({ message: "added to favorite" });
+    // res.json(favoriteItem);
+  } catch (error) {
+    console.error("Error adding movie to favorite:", error);
+    return res.status(500).json({ error: "Failed to add movie to favorite" });
+  }
+});
+
+router.delete("/remove-from-favorite", authToken, async (req, res) => {
+  const { user_id, movie_id } = req.body;
+  try {
+    const favoriteMovies = await prisma.wishlist.deleteMany({
+      where: {
+        user_id: Number(user_id),
+        movie_id: Number(movie_id),
+      },
+    });
+
+    res.status(200).json({ message: "Deleted from favorites" });
+  } catch (error) {
+    console.error("Error removing movie from favorites:", error);
+    // Handle error appropriately
+  }
+});
 
 export default router;
