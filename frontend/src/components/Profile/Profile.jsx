@@ -115,9 +115,11 @@ const Profile = () => {
             (tmdbMovie) => tmdbMovie.id === movie.movie_id
           );
           if (!tmdbMovie) return null;
+          console.log('ini', tmdbMovie.id);
+          console.log("to prop value:", `/movies/${tmdbMovie.id}`);
           return (
             <Box key={tmdbMovie.id} m={1} width="200px">
-              <Link to={`/movies/${tmdbMovie.id}`}>
+              <Link to={`/movies/${tmdbMovie}`}>
                 <img
                   src={`https://image.tmdb.org/t/p/w300/${tmdbMovie.poster_path}`}
                   alt={tmdbMovie.title}
