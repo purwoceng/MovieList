@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import { Typography, Box, Button, Link } from "@mui/material";
+import { Typography, Box, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import { ExitToApp } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { axiosApi } from "../../api/api";
