@@ -3,12 +3,14 @@ import { TextField, InputAdornment, Box } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
+import { useLocation } from "react-router-dom";
 import { searchMovie } from "../../features/currentGenreOrCategory";
 
 const Search = () => {
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
   const theme = useTheme();
+  const location = useLocation();
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -16,6 +18,10 @@ const Search = () => {
     }
   };
 
+  if (location.pathname !== "/") {
+    return null;
+  }
+  
   return (
     <Box
       sx={{
