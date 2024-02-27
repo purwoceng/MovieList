@@ -41,6 +41,7 @@ const MovieInformation = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(null);
 
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null; // Initialize decoded with jwtDecode(token)
@@ -53,25 +54,23 @@ const MovieInformation = () => {
   const userId = decoded ? decoded.id : null;
 
   useEffect(() => {
-    setIsMovieWatchlisted(false);
-    setIsMovieFavorited(false);
-  }, []);
-
-  console.log("id", id);
-  console.log("isLoggedIn", isLoggedIn);
-  console.log("decoded", decoded);
-  console.log("userId", userId);
-
-  useEffect(() => {
-    const checkFavorites = async () => {
+    const checkFavorite = async () => {
       try {
-        const response = await axiosApi.get(`/check-favorite/${userId}/${id}`, {
+        const response = await axiosApi.post("/check-favorite", {
+          user_id: userId,
+          movie_id: id
+        }, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (response.data.exists) {
+        // setIsMovieFavorited(response.data.check_favorite === "found");
+        if (response.status === 200) {
+          console.log("Response from checkFavorite:", response.data);
           setIsMovieFavorited(true);
+        }
+        if (response.status === 404) {
+          console.log("not favorited movie");
         }
       } catch (error) {
         console.error("Error checking favorites:", error);
@@ -80,24 +79,22 @@ const MovieInformation = () => {
 
     const checkWatchlist = async () => {
       try {
-        const response = await axiosApi.get(
-          `/check-watchlist/${userId}/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.data.exists) {
-          setIsMovieWatchlisted(true);
-        }
+        const response = await axiosApi.post("/check-watchlist", {
+          user_id: userId,
+          movie_id: id
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setIsMovieWatchlisted(response.data.exists);
       } catch (error) {
         console.error("Error checking watchlist:", error);
       }
     };
 
-    if (userId) {
-      checkFavorites();
+    if (userId !== null) {
+      checkFavorite();
       checkWatchlist();
     }
   }, [userId, id, token]);
@@ -105,44 +102,87 @@ const MovieInformation = () => {
   const addToFavorites = async () => {
     try {
       const response = await axiosApi.post(
-        `/add-to-favorite`,
+        "/add-to-favorite",
         {
           user_id: userId,
           movie_id: id,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Attach token to the request headers
+            Authorization: `Bearer ${token}`,
           },
         }
       );
+      setIsMovieFavorited(true);
       console.log(response.data); // Log the response data for debugging
-      setIsMovieFavorited(!isMovieFavorited);
     } catch (error) {
       console.error("Error adding to favorites:", error);
       // Handle error appropriately
     }
   };
+  const removeFromFavorites = async () => {
+    try {
+      const response = await axiosApi.delete(
+        "/remove-from-favorite",
+        {
+          data: {
+            user_id: userId,
+            movie_id: id,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsMovieFavorited(false);
+      console.log(response.data); // Log the response data for debugging
+    } catch (error) {
+      console.error("Error removing from favorites:", error);
+      // Handle error appropriately
+    }
+  };
+  
 
   const addToWatchlist = async () => {
     try {
       const response = await axiosApi.post(
-        `/add-to-watchlist`,
+        "/add-to-watchlist",
         {
           user_id: userId,
           movie_id: id,
-          // status: false,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Attach token to the request headers
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.data); // Log the response data for debugging
       setIsMovieWatchlisted(true);
+      console.log(response.data); // Log the response data for debugging
     } catch (error) {
-      console.error("Error adding to favorites:", error);
+      console.error("Error adding to watchlist:", error);
+      // Handle error appropriately
+    }
+  };
+
+  const removeFromWatchlist = async () => {
+    try {
+      const response = await axiosApi.delete(
+        "/remove-from-watchlist",
+        {
+          user_id: userId,
+          movie_id: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsMovieWatchlisted(false);
+      console.log(response.data); // Log the response data for debugging
+    } catch (error) {
+      console.error("Error removing from watchlist:", error);
       // Handle error appropriately
     }
   };
@@ -150,7 +190,6 @@ const MovieInformation = () => {
   const { data, isFetching, error } = useGetMovieQuery(id);
   const { data: recommendations, isFetching: isRecomendationsFetching } =
     useGetRecomendationsQuery({ list: "recommendations", movie_id: id });
-  console.log(recommendations);
 
   if (isFetching) {
     return (
@@ -424,7 +463,7 @@ const MovieInformation = () => {
               {userId !== null && (
                 <>
                   <Button
-                    onClick={addToFavorites}
+                    onClick={isMovieFavorited ? () => removeFromFavorites() : () => addToFavorites()}
                     endIcon={
                       isMovieFavorited ? (
                         <FavoriteBorderOutlined />
@@ -436,7 +475,7 @@ const MovieInformation = () => {
                     {isMovieFavorited ? "UnFavorite" : "Favorites"}
                   </Button>
                   <Button
-                    onClick={addToWatchlist}
+                    onClick={isMovieWatchlisted ? removeFromWatchlist : addToWatchlist}
                     endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}
                   >
                     {isMovieWatchlisted ? "Remove Watchlist" : "Add Watchlist"}
@@ -472,7 +511,7 @@ const MovieInformation = () => {
           <Box>Sorry there are no recommended movies</Box>
         )}
       </Box>
-      {console.log(data)}
+
       <Modal
         closeAfterTransition
         open={open}
