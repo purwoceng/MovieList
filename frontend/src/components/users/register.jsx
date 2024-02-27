@@ -29,6 +29,7 @@ function SignUp() {
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
   const [open, setOpen] = useState(false);
   const [required, setRequired] = useState(false);
   const [message, setMessage] = useState("");
@@ -41,6 +42,13 @@ function SignUp() {
   };
 
   const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const handleClickShowPassword1 = () => {
+    setShowPassword1(!showPassword1);
+  };
+
+  const handleMouseDownPassword1 = (event) => {
     event.preventDefault();
   };
 
@@ -216,7 +224,7 @@ function SignUp() {
                   autoComplete="new-password"
                   name="confirmPassword"
                   label="Confirm Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="confirmPassword"
                   error={!!passwordError}
                   helperText={passwordError}
@@ -226,10 +234,10 @@ function SignUp() {
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
+                          onClick={handleClickShowPassword1}
+                          onMouseDown={handleMouseDownPassword1}
                         >
-                          {showPassword ? (
+                          {showPassword1 ? (
                             <VisibilityIcon />
                           ) : (
                             <VisibilityOffIcon />
