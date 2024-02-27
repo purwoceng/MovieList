@@ -12,6 +12,7 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [tokenExpired, setTokenExpired] = useState(false);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
+  const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [tmdbMovies, setTmdbMovies] = useState([]);
   const navigate = useNavigate();
 
@@ -38,8 +39,22 @@ const Profile = () => {
 
   useEffect(() => {
     favoriteMoviesHandler();
+    watchlistMoviesHandler();
     fetchTmdbMovies();
   }, []);
+
+  const watchlistMoviesHandler = async () => {
+    try {
+      const response = await axiosApi.get(`/watchlist`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setWatchlistMovies(response.data);
+    } catch (error) {
+      console.error("Error fetching watchlist movies:", error);
+    }
+  };
 
   const favoriteMoviesHandler = async () => {
     try {
@@ -78,6 +93,7 @@ const Profile = () => {
   };
 
   console.log("Favorite Movies:", favoriteMovies);
+  console.log("Watchlist Movies:", watchlistMovies);
   console.log("TMDB Movies:", tmdbMovies);
 
   return (
