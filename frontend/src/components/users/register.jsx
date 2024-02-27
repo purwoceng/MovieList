@@ -144,9 +144,9 @@ function SignUp() {
           }}
         >
           <img
-            src="https://fontmeme.com/permalink/240221/06da7b28bee6adaad2438f1dec7814ac.png"
+            src="https://fontmeme.com/permalink/240225/faea312e9c50e22410269ab0d1bdc488.png"
             alt="Logo"
-            style={{ display: "block", margin: "0px auto", width: "30%" }}
+            style={{ display: "block", margin: "0px auto", width: "70%" }}
           />
           <Typography component="h1" variant="h5">
             Daftar Dulu ya!
@@ -224,7 +224,7 @@ function SignUp() {
                   autoComplete="new-password"
                   name="confirmPassword"
                   label="Confirm Password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword1 ? "text" : "password"}
                   id="confirmPassword"
                   error={!!passwordError}
                   helperText={passwordError}
