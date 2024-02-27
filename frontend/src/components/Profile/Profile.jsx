@@ -11,9 +11,7 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [tokenExpired, setTokenExpired] = useState(false);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
-  const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [tmdbMovies, setTmdbMovies] = useState([]);
-  const [apiMovies, setApiMovies] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +38,6 @@ const Profile = () => {
   useEffect(() => {
     favoriteMoviesHandler();
     fetchTmdbMovies();
-    fetchApiMovies();
   }, []);
 
   const favoriteMoviesHandler = async () => {
@@ -51,7 +48,6 @@ const Profile = () => {
         },
       });
       setFavoriteMovies(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching favorite movies:", error);
     }
@@ -59,29 +55,16 @@ const Profile = () => {
 
   const fetchTmdbMovies = async () => {
     try {
-      const response = await axios.get(
-        "https://api.themoviedb.org/3/movie/popular?api_key=e14104f5929fe7a58118c33246c8b05f"
-      );
-      setTmdbMovies(response.data.results);
+      let allMovies = [];
+      for (let page = 1; page <= 5; page++) {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3/movie/popular?api_key=e14104f5929fe7a58118c33246c8b05f&page=${page}`
+        );
+        allMovies = [...allMovies, ...response.data.results];
+      }
+      setTmdbMovies(allMovies);
     } catch (error) {
       console.error("Error fetching TMDb movies:", error);
-    }
-  };
-
-  const fetchApiMovies = async () => {
-    try {
-      const response = await axiosApi.get("/wishlist", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (Array.isArray(response.data)) {
-        setApiMovies(response.data);
-      } else {
-        console.error("Invalid data format received from API:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching API movies:", error);
     }
   };
 
@@ -93,7 +76,7 @@ const Profile = () => {
     }
   };
 
-  console.log("API Movies:", apiMovies);
+  console.log("Favorite Movies:", favoriteMovies);
   console.log("TMDB Movies:", tmdbMovies);
 
   return (
@@ -127,7 +110,7 @@ const Profile = () => {
         flexWrap="wrap"
         justifyContent="center"
       >
-        {apiMovies.map((movie) => {
+        {favoriteMovies.map((movie) => {
           const tmdbMovie = tmdbMovies.find(
             (tmdbMovie) => tmdbMovie.id === movie.movie_id
           );
@@ -136,7 +119,7 @@ const Profile = () => {
             <Box key={tmdbMovie.id} m={1} width="200px">
               <Link to={`/movies/${tmdbMovie.id}`}>
                 <img
-                  src={`https://image.tmdb.org/t/p/w500/${tmdbMovie.poster_path}`}
+                  src={`https://image.tmdb.org/t/p/w300/${tmdbMovie.poster_path}`}
                   alt={tmdbMovie.title}
                   style={{ width: "100%", height: "auto" }}
                 />
