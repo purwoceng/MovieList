@@ -127,25 +127,48 @@ router.get("/profile", authToken, async (req, res) => {
 });
 
 router.put("/profile", authToken, async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ error: "Token is required" });
-  }
-  const user_id = req.user.id;
-  const { name, email, image } = req.body;
   try {
-    const user = await prisma.user.update({
+    if (!req.user) {
+      return res.status(401).json({ error: "Token is required" });
+    }
+
+    const { name, email, password } = req.body;
+    const user_id = Number(req.user.id);
+
+    if (isNaN(user_id)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+
+    if (!password) {
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: user_id,
+        },
+        data: {
+          name,
+          email,
+        },
+      });
+      return res.json(updatedUser);
+    }
+
+    const pass = await bcrypt.hash(password, 12);
+
+    const updatedUser = await prisma.user.update({
       where: {
-        id: Number(user_id),
+        id: user_id,
       },
       data: {
         name,
         email,
-        image,
+        password: pass,
       },
     });
-    return res.status(200).json(user);
+
+    return res.status(200).json(updatedUser);
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Error updating user profile:", error);
+    return res.status(500).json({ error: "Failed to update user profile" });
   }
 });
 

@@ -39,6 +39,7 @@ function SignUp() {
   const [passwordError, setPasswordError] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const token = localStorage.getItem("token");
   const theme = useTheme();
 
   const handleClickShowPassword = () => {
@@ -117,9 +118,9 @@ function SignUp() {
     }
 
     try {
-      const response = await axiosApi.put("/profile", null, {
+      const response = await axiosApi.put("/profile", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setOpen(true);
@@ -129,7 +130,7 @@ function SignUp() {
         password: "",
       });
       localStorage.setItem("token", response.data.token);
-      navigate("/");
+      navigate("/profile");
     } catch (error) {
       console.error("There was an error signing up:", error.response.data);
       if (error.response.data.message === "Email already in use") {
