@@ -11,6 +11,7 @@ import {
 } from "./components";
 import Register from "./components/users/register";
 import Login from "./components/users/login";
+import EditProfile from "./components/Profile/EditProfile";
 
 const App = () => {
   const location = useLocation();
@@ -30,7 +31,7 @@ const App = () => {
           <Route path="/profile/" element={<Profile />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/editprofile" element={<EditProfile />} /> */}
+          <Route path="/editprofile" element={<EditProfile />} />
         </Routes>
       </Box>
     </Box>
