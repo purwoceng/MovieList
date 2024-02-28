@@ -103,8 +103,8 @@ const Login = () => {
             style={{ display: "block", margin: "10px auto", width: "55%" }}
           />
           <Typography
-            component="h1"
-            variant="h4"
+            component="h6"
+            variant="h5"
             marginBottom="10px"
             style={{ textAlign: "center" }}
           >

@@ -4,8 +4,6 @@ import authToken from "../middlewares/auth-token.js";
 
 const router = Router();
 
-
-
 router.get("/wishlist", authToken, async (req, res) => {
   const user_id = req.user.id;
   try {
@@ -53,7 +51,6 @@ router.get(
     }
   }
 );
-
 
 router.post("/add-to-favorite", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;

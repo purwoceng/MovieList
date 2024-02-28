@@ -25,22 +25,20 @@ const router = Router();
 //   }
 // });
 
-// router.get("/watchlist", authToken, async (req, res) => {
-
-//   const user_id = req.user.id;
-//   try {
-//     const watchlistItems = await prisma.watchlist.findMany({
-//       where: {
-//         user_id: Number(user_id),
-//       }
-//     });
-//     res.json(watchlistItems);
-//   } catch (error) {
-//     console.error("Error fetching watchlist:", error);
-//     res.status(500).json({ error: "Failed to fetch watchlist" });
-//   }
-// });
-
+router.get("/watchlist", authToken, async (req, res) => {
+  const user_id = req.user.id;
+  try {
+    const watchlistItems = await prisma.watchlist.findMany({
+      where: {
+        user_id: Number(user_id),
+      },
+    });
+    res.json(watchlistItems);
+  } catch (error) {
+    console.error("Error fetching watchlist:", error);
+    res.status(500).json({ error: "Failed to fetch watchlist" });
+  }
+});
 
 router.post("/add-to-watchlist", authToken, async (req, res) => {
   const { user_id, movie_id } = req.body;
@@ -128,4 +126,4 @@ router.get(
   }
 );
 
-export default router
+export default router;
