@@ -42,36 +42,36 @@ const MovieInformation = () => {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isFavorite, setIsFavorite] = useState(null);
-  
+
   const token = localStorage.getItem("token");
   const favoriteStatus = localStorage.getItem("favoriteStatus");
   const watchlistStatus = localStorage.getItem("watchlistStatus");
   const decoded = token ? jwtDecode(token) : null; // Initialize decoded with jwtDecode(token)
-  
+
   const { id } = useParams();
-  // const isMovieFavorited = false;
-  // const isMovieWatchlisted = false;
   const [isMovieFavorited, setIsMovieFavorited] = useState(false);
   const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(false);
-  // const [isInWatchlist, setIsInWatchlist] = useState(false);
+  // const userId = decoded ? decoded.id : null;
+
+  // const { id: movieId } = useParams(); // Mendapatkan ID film dari URL
+
+  // Fungsi untuk mendapatkan ID pengguna dari token JWT
+  const getUserIdFromToken = () => {
+    const token = localStorage.getItem("token"); // Ambil token dari local storage atau dari mana pun Anda menyimpannya
+    if (token) {
+      const decodedToken = jwtDecode(token); // Decode token JWT
+      return decodedToken.id; // Kembalikan ID pengguna dari token
+    }
+    return null; // Jika tidak ada token, kembalikan null atau penanganan lain sesuai kebutuhan Anda
+  };
+
+  const userId = getUserIdFromToken(); // Mendapatkan ID pengguna dari token JWT
+
 
   useEffect(() => {
-    // On component mount, check if movie is favorited in localStorage
-    const favoriteStatus = localStorage.getItem("favoriteStatus");
-    if (favoriteStatus === "true") {
-      setIsMovieFavorited(true);
-    }
+    const isFavorited = localStorage.getItem(`isMovieFavorited_${userId}_${id}`) === "true";
+    setIsMovieFavorited(isFavorited);
 
-    const watchlistStatus = localStorage.getItem("watchlistStatus");
-    if (watchlistStatus === "true") {
-      setIsMovieWatchlisted(true);
-    }
-  }, []);
-
-
-  const userId = decoded ? decoded.id : null;
-
-  useEffect(() => {
     const checkFavorite = async () => {
       try {
         const response = await axiosApi.post("/check-favorite", {
@@ -82,25 +82,31 @@ const MovieInformation = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // setIsMovieFavorited(response.data.check_favorite === "found");
+
         if (response.status === 200) {
-          console.log("Response from checkFavorite:", response.data);
-          // setIsMovieFavorited(true);
-          // localStorage.setItem("favoriteStatus", true);
-          localStorage.setItem("isMovieFavorited", true);
-        }
-        if (response.status === 404) {
-          console.log("not favorited movie");
+          setIsMovieFavorited(true);
+          localStorage.setItem(`isMovieFavorited_${userId}_${id}`, true);
+        } else if (response.status === 404) {
+          setIsMovieFavorited(false);
+          localStorage.removeItem(`isMovieFavorited_${userId}_${id}`);
         }
       } catch (error) {
-        localStorage.setItem("favoriteStatus", false);
         console.error("Error checking favorites:", error);
       }
     };
 
+    if (userId !== null) {
+      checkFavorite();
+    }
+  }, [userId, id, token]);
+  
+  useEffect(() => {
+    const isWatchlisted = localStorage.getItem(`isMovieWatchlisted_${userId}_${id}`) === "true";
+    setIsMovieWatchlisted(isWatchlisted);
+
     const checkWatchlist = async () => {
       try {
-        const response = await axiosApi.post("/check-watchlist", {
+        const response = await axiosApi.post("/check-favorite", {
           user_id: userId,
           movie_id: id
         }, {
@@ -108,17 +114,24 @@ const MovieInformation = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setIsMovieWatchlisted(response.data.exists);
+
+        if (response.status === 200) {
+          setIsMovieWatchlisted(true);
+          localStorage.setItem(`isMovieWatchlisted_${userId}_${id}`, true);
+        } else if (response.status === 404) {
+          setIsMovieWatchlisted(false);
+          localStorage.removeItem(`isMovieWatchlisted_${userId}_${id}`);
+        }
       } catch (error) {
         console.error("Error checking watchlist:", error);
       }
     };
 
     if (userId !== null) {
-      checkFavorite();
       checkWatchlist();
     }
   }, [userId, id, token]);
+  
 
   const addToFavorites = async () => {
     try {
@@ -135,7 +148,8 @@ const MovieInformation = () => {
         }
       );
       setIsMovieFavorited(true);
-      localStorage.setItem("isMovieFavorited", true);
+      // localStorage.setItem("isMovieFavorited", true);
+      localStorage.setItem(`isMovieFavorited_${userId}_${id}`, true);
       console.log(response.data);
     } catch (error) {
       console.error("Error adding to favorites:", error);
@@ -157,7 +171,8 @@ const MovieInformation = () => {
         }
       );
       setIsMovieFavorited(false);
-      localStorage.removeItem("isMovieFavorited");
+      // localStorage.removeItem("isMovieFavorited");
+      localStorage.removeItem(`isMovieFavorited_${userId}_${id}`);
       console.log(response.data);// Log the response data for debugging
     } catch (error) {
       console.error("Error removing from favorites:", error);
@@ -173,6 +188,7 @@ const MovieInformation = () => {
         {
           user_id: userId,
           movie_id: id,
+          watched: false,
         },
         {
           headers: {
@@ -181,7 +197,8 @@ const MovieInformation = () => {
         }
       );
       setIsMovieWatchlisted(true);
-      localStorage.setItem("isMovieWatchlisted", true);
+      localStorage.setItem(`isMovieWatchlisted_${userId}_${id}`, true);
+      // localStorage.setItem("isMovieWatchlisted", true);
       console.log(response.data); // Log the response data for debugging
     } catch (error) {
       console.error("Error adding to watchlist:", error);
@@ -204,7 +221,8 @@ const MovieInformation = () => {
         }
       );
       setIsMovieWatchlisted(false);
-      localStorage.removeItem("isMovieWatchlisted");
+      // localStorage.removeItem("isMovieWatchlisted");
+      localStorage.removeItem(`isMovieWatchlisted_${userId}_${id}`, true);
       console.log(response.data);// Log the response data for debugging
     } catch (error) {
       console.error("Error removing from Watchlist:", error);
@@ -503,7 +521,6 @@ const MovieInformation = () => {
                 </>
               )}
               <Button
-                onClick
                 endIcon={<ArrowBack />}
                 sx={{ borderColor: "primary.main" }}
               >
