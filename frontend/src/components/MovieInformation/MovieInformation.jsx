@@ -42,15 +42,33 @@ const MovieInformation = () => {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isFavorite, setIsFavorite] = useState(null);
-
+  
   const token = localStorage.getItem("token");
+  const favoriteStatus = localStorage.getItem("favoriteStatus");
+  const watchlistStatus = localStorage.getItem("watchlistStatus");
   const decoded = token ? jwtDecode(token) : null; // Initialize decoded with jwtDecode(token)
-
+  
   const { id } = useParams();
   // const isMovieFavorited = false;
   // const isMovieWatchlisted = false;
   const [isMovieFavorited, setIsMovieFavorited] = useState(false);
   const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(false);
+  // const [isInWatchlist, setIsInWatchlist] = useState(false);
+
+  useEffect(() => {
+    // On component mount, check if movie is favorited in localStorage
+    const favoriteStatus = localStorage.getItem("favoriteStatus");
+    if (favoriteStatus === "true") {
+      setIsMovieFavorited(true);
+    }
+
+    const watchlistStatus = localStorage.getItem("watchlistStatus");
+    if (watchlistStatus === "true") {
+      setIsMovieWatchlisted(true);
+    }
+  }, []);
+
+
   const userId = decoded ? decoded.id : null;
 
   useEffect(() => {
@@ -67,12 +85,15 @@ const MovieInformation = () => {
         // setIsMovieFavorited(response.data.check_favorite === "found");
         if (response.status === 200) {
           console.log("Response from checkFavorite:", response.data);
-          setIsMovieFavorited(true);
+          // setIsMovieFavorited(true);
+          // localStorage.setItem("favoriteStatus", true);
+          localStorage.setItem("isMovieFavorited", true);
         }
         if (response.status === 404) {
           console.log("not favorited movie");
         }
       } catch (error) {
+        localStorage.setItem("favoriteStatus", false);
         console.error("Error checking favorites:", error);
       }
     };
@@ -114,7 +135,8 @@ const MovieInformation = () => {
         }
       );
       setIsMovieFavorited(true);
-      console.log(response.data); // Log the response data for debugging
+      localStorage.setItem("isMovieFavorited", true);
+      console.log(response.data);
     } catch (error) {
       console.error("Error adding to favorites:", error);
       // Handle error appropriately
@@ -135,13 +157,14 @@ const MovieInformation = () => {
         }
       );
       setIsMovieFavorited(false);
-      console.log(response.data); // Log the response data for debugging
+      localStorage.removeItem("isMovieFavorited");
+      console.log(response.data);// Log the response data for debugging
     } catch (error) {
       console.error("Error removing from favorites:", error);
       // Handle error appropriately
     }
   };
-  
+
 
   const addToWatchlist = async () => {
     try {
@@ -158,6 +181,7 @@ const MovieInformation = () => {
         }
       );
       setIsMovieWatchlisted(true);
+      localStorage.setItem("isMovieWatchlisted", true);
       console.log(response.data); // Log the response data for debugging
     } catch (error) {
       console.error("Error adding to watchlist:", error);
@@ -170,19 +194,20 @@ const MovieInformation = () => {
       const response = await axiosApi.delete(
         "/remove-from-watchlist",
         {
-          user_id: userId,
-          movie_id: id,
-        },
-        {
+          data: {
+            user_id: userId,
+            movie_id: id,
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
       setIsMovieWatchlisted(false);
-      console.log(response.data); // Log the response data for debugging
+      localStorage.removeItem("isMovieWatchlisted");
+      console.log(response.data);// Log the response data for debugging
     } catch (error) {
-      console.error("Error removing from watchlist:", error);
+      console.error("Error removing from Watchlist:", error);
       // Handle error appropriately
     }
   };
@@ -206,6 +231,7 @@ const MovieInformation = () => {
       </Box>
     );
   }
+  console.log("favoriteStatus", favoriteStatus);
 
   return (
     <Grid
@@ -463,16 +489,10 @@ const MovieInformation = () => {
               {userId !== null && (
                 <>
                   <Button
-                    onClick={isMovieFavorited ? () => removeFromFavorites() : () => addToFavorites()}
-                    endIcon={
-                      isMovieFavorited ? (
-                        <FavoriteBorderOutlined />
-                      ) : (
-                        <Favorite />
-                      )
-                    }
+                    onClick={isMovieFavorited ? removeFromFavorites : addToFavorites}
+                    endIcon={isMovieFavorited ? <Favorite /> : <FavoriteBorderOutlined />}
                   >
-                    {isMovieFavorited ? "UnFavorite" : "Favorites"}
+                    {isMovieFavorited ? "UnFavorite" : "Favorite"}
                   </Button>
                   <Button
                     onClick={isMovieWatchlisted ? removeFromWatchlist : addToWatchlist}
@@ -483,7 +503,7 @@ const MovieInformation = () => {
                 </>
               )}
               <Button
-                onClick={() => addToWatchlist()}
+                onClick
                 endIcon={<ArrowBack />}
                 sx={{ borderColor: "primary.main" }}
               >
