@@ -49,7 +49,7 @@ Anda dapat melaporkan bug dengan membuat isu baru di repositori proyek ini di Gi
 
 ## Rujukan/API
 
-Filmpire menggunakan beberapa API pihak ketiga untuk mendapatkan data tentang film dan ulasan pengguna.
+KONFLIX menggunakan beberapa API pihak ketiga untuk mendapatkan data tentang film dan ulasan pengguna.
 
 - [The Movie Database (TMDb)](https://www.themoviedb.org/documentation/api)
 - [IMDb API](https://www.imdb.com/interfaces/)
