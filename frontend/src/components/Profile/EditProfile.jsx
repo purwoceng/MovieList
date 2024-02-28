@@ -132,7 +132,7 @@ function SignUp() {
       localStorage.setItem("token", response.data.token);
       navigate("/profile");
     } catch (error) {
-      console.error("There was an error signing up:", error.response.data);
+      console.error("There was an error when trying to update:", error.response.data);
       if (error.response.data.message === "Email already in use") {
         setEmailTaken(true);
       } else {

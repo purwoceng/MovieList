@@ -126,11 +126,11 @@ router.get("/profile", authToken, async (req, res) => {
   }
 });
 
-router.put("/profile", authToken, async (req, res) => {
+router.put("/profile", async (req, res) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ error: "Token is required" });
-    }
+    // if (!req.user) {
+    //   return res.status(401).json({ error: "Token is required" });
+    // }
 
     const { name, email, password } = req.body;
     const user_id = Number(req.user.id);
