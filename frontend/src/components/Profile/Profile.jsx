@@ -20,9 +20,15 @@ const Profile = () => {
   const [showMoreFavoriteMovies, setShowMoreFavoriteMovies] = useState(false);
   const [showMoreWatchlistMovies, setShowMoreWatchlistMovies] = useState(false);
   const navigate = useNavigate();
-
+  
+  const token = localStorage.getItem("token");
+  
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    console.log("useEffect cek token",token);
+    if(token==null){
+      alert("Please login first")
+      return navigate("/login")  
+    }
     if (token) {
       const decodedToken = jwtDecode(token);
       const { name, email, exp } = decodedToken;
@@ -94,7 +100,7 @@ const Profile = () => {
   const Logout = () => {
     const confirmed = window.confirm("Are you sure you want to logout?");
     if (confirmed) {
-      localStorage.clear();
+      localStorage.removeItem("token");
       navigate("/login");
     }
   };
@@ -153,18 +159,10 @@ const Profile = () => {
           Logout <ExitToApp />
         </Button>
       </Box>
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <Typography variant="h4" gutterBottom>
-          My Profile
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Name: {name}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Email: {email}
-        </Typography>
-      </Box>
-      <Typography variant="h4" gutterBottom>
+     
+      <Typography variant="h4" gutterBottom sx={{
+        marginTop: "30px",
+      }}>
         Favorite Movies:
       </Typography>
       <Box
