@@ -180,9 +180,9 @@ function SignUp() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  helperText="Please enter your email address"
                   error={!!emailError || emailTaken}
                   FormHelperTextProps={{ error: true }}
+                  type="email"
                 />
               </Grid>
               <Grid item xs={12}>
