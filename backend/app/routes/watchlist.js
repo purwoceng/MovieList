@@ -62,6 +62,23 @@ router.post("/add-to-watchlist", authToken, async (req, res) => {
   }
 });
 
+router.delete("/remove-from-watchlist", authToken, async (req, res) => {
+  const { user_id, movie_id } = req.body;
+  try {
+    const favoriteMovies = await prisma.watchlist.deleteMany({
+      where: {
+        user_id: Number(user_id),
+        movie_id: Number(movie_id),
+      },
+    });
+
+    res.status(200).json({ message: "Deleted from watchlist" });
+  } catch (error) {
+    console.error("Error removing movie from watchlist:", error);
+    // Handle error appropriately
+  }
+});
+
 
 router.get("/watchlist", authToken, async (req, res) => {
   const user_id = req.user.id;
