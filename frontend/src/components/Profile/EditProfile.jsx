@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -20,9 +20,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { useTheme } from "@mui/material/styles";
-
-
 function SignUp() {
   const [formData, setFormData] = useState({
     name: "",
@@ -38,6 +37,9 @@ function SignUp() {
   const [emailError, setEmailError] = useState("");
   const [emailTaken, setEmailTaken] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const theme = useTheme();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -53,6 +55,20 @@ function SignUp() {
   const handleMouseDownPassword1 = (event) => {
     event.preventDefault();
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const { name, email, exp } = decodedToken;
+      setFormData({ name, email });
+
+      const currentTime = Date.now() / 1000;
+      if (exp < currentTime) {
+        setTokenExpired(true);
+      }
+    }
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -83,12 +99,7 @@ function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
+    if (!formData.name || !formData.email) {
       setRequired(true);
       return;
     }
@@ -105,42 +116,32 @@ function SignUp() {
       return;
     }
 
-    axiosApi
-      .post("/register", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      })
-      .then((response) => {
-        console.log("Response:", response.data.response);
-        setOpen(true);
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        });
-        localStorage.setItem("token", response.data.token);
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("There was an error signing up:", error.response.data);
-        if (error.response.data.message === "Email already in use") {
-          setEmailTaken(true);
-        } else {
-          setMessage(error.response.data.message);
-        }
+    try {
+      const response = await axiosApi.put("/profile", null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
+      setOpen(true);
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+      });
+      localStorage.setItem("token", response.data.token);
+      navigate("/");
+    } catch (error) {
+      console.error("There was an error signing up:", error.response.data);
+      if (error.response.data.message === "Email already in use") {
+        setEmailTaken(true);
+      } else {
+        setMessage(error.response.data.message);
+      }
+    }
   };
 
-  const theme = useTheme();
-  const redLogo =
-    "https://fontmeme.com/permalink/240222/a38b5a781021948c273517b66664cf81.png";
-  const blueLogo =
-    "https://fontmeme.com/permalink/240228/e37ab60c16940879ba3d04f5e125157a.png";
-
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -151,14 +152,8 @@ function SignUp() {
             alignItems: "center",
           }}
         >
-          <img
-            src={theme.palette.mode === "dark" ? redLogo : blueLogo}
-            // src="https://fontmeme.com/permalink/240228/e37ab60c16940879ba3d04f5e125157a.png"
-            alt="Logo"
-            style={{ display: "block", margin: "0px auto", width: "70%" }}
-          />
           <Typography component="h1" variant="h5">
-            Daftar Dulu ya!
+            Edit Profile
           </Typography>
           <Box
             component="form"
@@ -189,9 +184,9 @@ function SignUp() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
+                  helperText="Please enter your email address"
                   error={!!emailError || emailTaken}
                   FormHelperTextProps={{ error: true }}
-                  type="email"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -224,57 +219,17 @@ function SignUp() {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type={showPassword1 ? "text" : "password"}
-                  id="confirmPassword"
-                  error={!!passwordError}
-                  helperText={passwordError}
-                  FormHelperTextProps={{ error: true }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword1}
-                          onMouseDown={handleMouseDownPassword1}
-                        >
-                          {showPassword1 ? (
-                            <VisibilityIcon />
-                          ) : (
-                            <VisibilityOffIcon />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
             </Grid>
             <Button
+              color={theme.palette.mode === "dark" ? "error" : "primary"}
               type="submit"
-              variant="contained"
-              color={theme.palette.mode === "dark" ? 'error' : 'primary'}
               fullWidth
+              variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Edit Profile
             </Button>
             {message ? <p>{message}</p> : null}
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  Udah Punya akun?? Masuk aja
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
       </Container>
@@ -293,14 +248,30 @@ function SignUp() {
         </DialogActions>
       </Dialog>
 
-      {/* Modal for email already in use */}
-      <Dialog open={emailTaken} onClose={handleModalClose}>
-        <DialogTitle>Email Already in Use</DialogTitle>
+      {/* Error Dialogs */}
+      <Dialog
+        open={emailTaken || !!emailError || required || !!passwordError}
+        onClose={handleModalClose}
+      >
+        <DialogTitle>Error</DialogTitle>
         <DialogContent>
-          <Typography variant="body1">
-            The email you entered is already associated with an existing
-            account. Please use a different email address.
-          </Typography>
+          {emailTaken && (
+            <Typography variant="body1">
+              The email you entered is already associated with an existing
+              account. Please use a different email address.
+            </Typography>
+          )}
+          {!!emailError && (
+            <Typography variant="body1">
+              Please enter a valid email address.
+            </Typography>
+          )}
+          {required && (
+            <Typography variant="body1">All fields are required!</Typography>
+          )}
+          {!!passwordError && (
+            <Typography variant="body1">{passwordError}</Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleModalClose} color="primary">
@@ -308,35 +279,7 @@ function SignUp() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Modal for invalid email format */}
-      <Dialog open={!!emailError} onClose={handleModalClose}>
-        <DialogTitle>Invalid Email Format</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">
-            Please enter a valid email address.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleModalClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Modal for required fields */}
-      <Dialog open={required} onClose={handleRequired}>
-        <DialogTitle>Required</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">All Fields are Required!</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleRequired} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    </ThemeProvider>
   );
 }
 
