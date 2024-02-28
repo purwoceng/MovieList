@@ -20,6 +20,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -131,8 +133,14 @@ function SignUp() {
       });
   };
 
+  const theme = useTheme();
+  const redLogo =
+    "https://fontmeme.com/permalink/240222/a38b5a781021948c273517b66664cf81.png";
+  const blueLogo =
+    "https://fontmeme.com/permalink/240228/e37ab60c16940879ba3d04f5e125157a.png";
+
   return (
-    <ThemeProvider theme={createTheme()}>
+    <>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -144,7 +152,8 @@ function SignUp() {
           }}
         >
           <img
-            src="https://fontmeme.com/permalink/240225/faea312e9c50e22410269ab0d1bdc488.png"
+            src={theme.palette.mode === "dark" ? redLogo : blueLogo}
+            // src="https://fontmeme.com/permalink/240228/e37ab60c16940879ba3d04f5e125157a.png"
             alt="Logo"
             style={{ display: "block", margin: "0px auto", width: "70%" }}
           />
@@ -251,8 +260,9 @@ function SignUp() {
             </Grid>
             <Button
               type="submit"
-              fullWidth
               variant="contained"
+              color={theme.palette.mode === "dark" ? 'error' : 'primary'}
+              fullWidth
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
@@ -326,7 +336,7 @@ function SignUp() {
           </Button>
         </DialogActions>
       </Dialog>
-    </ThemeProvider>
+    </>
   );
 }
 
