@@ -7,7 +7,9 @@ KONFLIX adalah aplikasi web yang didukung oleh kecerdasan buatan (AI) yang menye
 ## Struktur Direktori
 
 MovieListe/: Berisi Folder frontend dan backend.
+
 frontend/: Berisi kode untuk antarmuka pengguna (UI) yang akan diakses melalui browser.
+
 backend/: Berisi kode untuk logika aplikasi, interaksi dengan database, dan penyediaan data ke frontend.
 
 ## Instalasi
