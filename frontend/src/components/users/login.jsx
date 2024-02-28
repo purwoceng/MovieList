@@ -20,6 +20,8 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
+import { useTheme } from "@mui/material/styles";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,6 +33,13 @@ const Login = () => {
   const [errorOpen, setErrorOpen] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const theme = useTheme();
+
+
+  const redLogo =
+    "https://fontmeme.com/permalink/240222/a38b5a781021948c273517b66664cf81.png";
+  const blueLogo =
+    "https://fontmeme.com/permalink/240228/e37ab60c16940879ba3d04f5e125157a.png";
 
   const handleModalClose = () => {
     setOpen(false);
@@ -88,7 +97,8 @@ const Login = () => {
       >
         <Paper elevation={3} style={{ padding: 20, width: "100%" }}>
           <img
-            src="https://fontmeme.com/permalink/240225/faea312e9c50e22410269ab0d1bdc488.png"
+            // src="https://fontmeme.com/permalink/240228/e37ab60c16940879ba3d04f5e125157a.png"
+            src={theme.palette.mode === "dark" ? redLogo : blueLogo}
             alt="Logo"
             style={{ display: "block", margin: "10px auto", width: "55%" }}
           />
@@ -150,7 +160,7 @@ const Login = () => {
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
+                color={theme.palette.mode === "dark" ? 'error' : 'primary'}
                 fullWidth
               >
                 Login
