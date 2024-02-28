@@ -22,6 +22,12 @@ const ToggleColorMode = ({ children }) => {
       createTheme({
         palette: {
           mode,
+          error: {
+            main: '#DB202C',
+            light: '#C20F08',
+            dark: '#C20F08',
+            contrastText: '#242105',
+          }
         },
         components: {
           MuiCard: {

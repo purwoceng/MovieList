@@ -28,7 +28,7 @@ const categories = [
 const redLogo =
   "https://fontmeme.com/permalink/240222/a38b5a781021948c273517b66664cf81.png";
 const blueLogo =
-  "https://fontmeme.com/permalink/240225/faea312e9c50e22410269ab0d1bdc488.png";
+  "https://fontmeme.com/permalink/240228/e37ab60c16940879ba3d04f5e125157a.png";
 
 const Sidebar = ({ setMobileOpen }) => {
   const {genreIdOrCategoryName} = useSelector((state)=>state.currentGenreOrCategory)
@@ -53,7 +53,7 @@ const Sidebar = ({ setMobileOpen }) => {
         <img
           style={{ width: "70%" }}
           src={theme.palette.mode === "dark" ? redLogo : blueLogo}
-          alt="Filmpire logo"
+          alt="Konflix logo"
         />
       </Link>
       <Divider />
