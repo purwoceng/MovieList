@@ -149,7 +149,4 @@ router.put("/profile", authToken, async (req, res) => {
   }
 });
 
-
-
-
 export default router;
