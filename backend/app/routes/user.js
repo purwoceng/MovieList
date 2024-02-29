@@ -34,7 +34,6 @@ router.post("/register", async (req, res) => {
       name,
       email,
       password: pass,
-      role_id: 1,
     },
   });
   /* `<<<<<<<` is a version control conflict marker that indicates the beginning of a conflict in the
@@ -48,7 +47,6 @@ router.post("/register", async (req, res) => {
     id: user.id,
     name: user.name,
     email: user.email,
-    role_id: user.role_id,
   };
 
   const expiresIn = 60 * 60 * 24 * 30;
@@ -80,7 +78,6 @@ router.post("/login", async (req, res) => {
     id: user.id,
     name: user.name,
     email: user.email,
-    role_id: user.role_id,
   };
 
   const expiresIn = 60 * 60 * 24 * 30;

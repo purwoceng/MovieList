@@ -188,7 +188,7 @@ const MovieInformation = () => {
         {
           user_id: userId,
           movie_id: id,
-          watched: false,
+          
         },
         {
           headers: {

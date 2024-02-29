@@ -13,6 +13,8 @@ router.get("/wishlist", authToken, async (req, res) => {
       },
     });
     res.json(wishlistItems);
+    // console.log("wishlist",wishlistItems);
+    // return res.json({message:"wishlist",data:wishlistItems});
   } catch (error) {
     console.error("Error fetching wishlist:", error);
     res.status(500).json({ error: "Failed to fetch wishlist" });

@@ -54,6 +54,28 @@ const Profile = () => {
     fetchTmdbMovies();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [favoriteMoviesData, watchlistMoviesData] = await Promise.all([
+          favoriteMoviesHandler(),
+          watchlistMoviesHandler(),
+        ]);
+  
+        setFavoriteMovies(favoriteMoviesData);
+        setWatchlistMovies(watchlistMoviesData);
+        setDisplayedFavoriteMovies(favoriteMoviesData.slice(0, 9));
+        setDisplayedWatchlistMovies(watchlistMoviesData.slice(0, 9));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  
+
   const watchlistMoviesHandler = async () => {
     try {
       const response = await axiosApi.get(`/watchlist`, {
@@ -61,13 +83,13 @@ const Profile = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setWatchlistMovies(response.data);
-      setDisplayedWatchlistMovies(response.data.slice(0, 9));
+      return response.data; // Return all data
     } catch (error) {
       console.error("Error fetching watchlist movies:", error);
+      throw error; // Rethrow the error
     }
   };
-
+  
   const favoriteMoviesHandler = async () => {
     try {
       const response = await axiosApi.get(`/wishlist`, {
@@ -75,12 +97,14 @@ const Profile = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setFavoriteMovies(response.data);
-      setDisplayedFavoriteMovies(response.data.slice(0, 9));
+      return response.data; // Return all data
     } catch (error) {
       console.error("Error fetching favorite movies:", error);
+      throw error; // Rethrow the error
     }
   };
+    
+  
 
   const fetchTmdbMovies = async () => {
     try {
